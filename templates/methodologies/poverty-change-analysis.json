@@ -1,0 +1,202 @@
+{
+  "_description": "Methodology template: Poverty Change Analysis (Two-Vintage Comparison). Pre-fills analysis section with change-detection method stack for tracking poverty trends across ACS vintages.",
+  "_methodology_id": "poverty-change-analysis",
+  "_methodology_version": "1.0",
+  "_based_on": "templates/project_brief.json",
+
+  "project_id": "",
+  "project_title": "Poverty Change Analysis — [Study Area] [Year1] vs [Year2]",
+  "created_at": "",
+  "created_by": "lead-analyst",
+
+  "client": {
+    "name": "",
+    "type": "foundation | planning_dept | nonprofit | government | research_institution",
+    "contact": "",
+    "notes": "Confirm the two ACS vintages before starting. Document whether tract boundaries changed between vintages — this requires crosswalk processing."
+  },
+
+  "audience": {
+    "primary_reader": "",
+    "role": "Policy analyst, foundation program officer, or elected official",
+    "technical_level": "low | medium",
+    "what_they_are_deciding": "Whether anti-poverty programs worked, where conditions worsened, and where to direct next-cycle resources.",
+    "what_they_already_believe": "COVID disrupted poverty trends in ways that complicate before/after comparisons.",
+    "political_or_institutional_context": "Findings may be used to argue for or against program funding. Frame as descriptive, not prescriptive, unless client explicitly wants advocacy framing."
+  },
+
+  "engagement": {
+    "hero_question": "How did poverty, unemployment, housing cost burden, and income change between [Year1] and [Year2], and which census tracts show persistent or worsening need?",
+    "deliverable_type": "external | internal | grant | policy",
+    "deadline": "",
+    "budget_tier": "standard",
+    "sensitive_findings_to_handle_carefully": [
+      "COVID disruption on 2020-2022 data — flag explicitly, do not treat as clean trend",
+      "Tract boundary changes — crosswalked data should be flagged as modeled",
+      "Neighborhoods with demographic change may show poverty change confounded by displacement"
+    ]
+  },
+
+  "geography": {
+    "study_area": "",
+    "geographic_unit": "tract",
+    "crs_epsg": "4326",
+    "bounding_box": null,
+    "known_spatial_issues": [
+      "Tract boundaries may have changed between vintages — check Census TIGER for boundary changes",
+      "Merged or split tracts require crosswalk before change detection",
+      "Small tracts with high MOEs make change detection unreliable — flag in QA"
+    ]
+  },
+
+  "data": {
+    "primary_sources": [
+      {
+        "name": "ACS 5-Year Estimates — Vintage 1 (Earlier)",
+        "url": "https://data.census.gov",
+        "tables": [
+          "B17001 (poverty by sex and age)",
+          "B19013 (median household income)",
+          "B23025 (employment status)",
+          "B25070 (gross rent as % of income)"
+        ],
+        "fetch_script": "fetch_acs_data.py",
+        "notes": "Download for the earlier vintage. Store in data/raw/acs_[year1]/"
+      },
+      {
+        "name": "ACS 5-Year Estimates — Vintage 2 (Later)",
+        "url": "https://data.census.gov",
+        "tables": [
+          "B17001 (poverty by sex and age)",
+          "B19013 (median household income)",
+          "B23025 (employment status)",
+          "B25070 (gross rent as % of income)"
+        ],
+        "fetch_script": "fetch_acs_data.py",
+        "notes": "Download for the later vintage. Store in data/raw/acs_[year2]/"
+      },
+      {
+        "name": "Census Tract Relationship Files",
+        "url": "https://www.census.gov/geographies/reference-files/time-series/geo/relationship-files.html",
+        "notes": "Required if tract boundaries changed between vintages. Use to crosswalk population-weighted estimates."
+      },
+      {
+        "name": "TIGER/Line Tracts — Both Vintages",
+        "url": "https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.html",
+        "fetch_script": "retrieve_tiger.py",
+        "notes": "Download both vintages. Use later-vintage boundaries as the target geography for crosswalk."
+      }
+    ],
+    "vintage": "[year1] and [year2] — ACS 5-year estimates",
+    "known_data_quality_issues": [
+      "ACS 5-year estimates are rolling averages — a 2019 5-year estimate covers 2015-2019. Comparing 2019 vs 2022 5-year estimates has overlapping years (2017-2019 appears in both). Change is not fully independent.",
+      "COVID-19 disrupted 2020 and 2021 ACS collection — 2020-2022 estimates should be used with caution for trend claims",
+      "Margin of error on change estimates: if both vintages have high MOEs, the change itself may be statistically insignificant",
+      "Displacement and gentrification can cause poverty rate to fall while absolute poor population stays constant or grows"
+    ],
+    "institutional_areas_to_flag": [
+      "Prisons and GQs distort poverty rates — the Census Bureau imputes poverty status for GQ residents differently",
+      "College tracts with large student populations show artificially high poverty rates due to $0 income reporting"
+    ],
+    "join_key": "GEOID"
+  },
+
+  "analysis": {
+    "dependent_variable": "poverty_rate_change",
+    "dependent_variable_notes": "Computed as poverty_rate_[year2] - poverty_rate_[year1]. Use derive_fields.py or compute_change_detection.py.",
+    "independent_variables": [
+      "poverty_rate_year1",
+      "poverty_rate_year2",
+      "median_income_change",
+      "unemployment_rate_change",
+      "rent_burden_change"
+    ],
+    "analysis_types": {
+      "primary": [
+        "change_detection:poverty_rate:diverging_choropleth",
+        "small_multiples:poverty_rate:unemployment_rate:median_income:rent_burden",
+        "persistent_hotspots:poverty_rate:[year1]:[year2]",
+        "scqa_narrative:trend_framing"
+      ]
+    },
+    "analysis_types_requested": [
+      "change_detection:poverty_rate_change",
+      "small_multiples:poverty_rate:unemployment_rate:median_income:rent_burden",
+      "hotspots:poverty_rate_year1",
+      "hotspots:poverty_rate_year2",
+      "persistent_hotspot_overlay",
+      "choropleth:poverty_rate_year2"
+    ],
+    "analysis_notes": {
+      "change_detection": "Use compute_change_detection.py or diverging choropleth in analyze_choropleth.py. Diverging color scale centered on 0 (no change). Red = increase in poverty rate. Blue = decrease. Natural breaks on absolute value of change, symmetric around 0.",
+      "small_multiples": "Four-panel map: poverty_rate, unemployment_rate, median_income, rent_burden — all for the later vintage. Use analyze_small_multiples.py. Shared spatial extent, individual color scales. Lets reader see which dimension drives change in their area.",
+      "persistent_hotspots": "Run Gi* on both vintages separately. Overlay hot spots from both vintages to identify 'persistent' hot spots (significant in both). These are the highest-need tracts — consistently elevated over time, not a COVID artifact.",
+      "scqa_narrative": "Use SCQA framing explicitly in the executive section. Situation = regional poverty context. Complication = change since [year1]. Question = which areas improved/worsened and why. Answer = persistent hotspots + specific change drivers.",
+      "statistical_significance": "Where possible, test whether the poverty rate change exceeds the combined MOE of both estimates. Flag tracts where change is within MOE range as 'no statistically significant change.'"
+    },
+    "spatial_weights": "queen",
+    "classification_scheme": "natural_breaks",
+    "k_classes": 5
+  },
+
+  "outputs": {
+    "required_maps": [
+      "diverging_choropleth:poverty_rate_change",
+      "small_multiples:4var_later_vintage",
+      "persistent_hotspot_overlay",
+      "choropleth:poverty_rate_later_vintage"
+    ],
+    "required_statistics": [
+      "summary_stats:poverty_rate_year1",
+      "summary_stats:poverty_rate_year2",
+      "summary_stats:poverty_rate_change",
+      "moran_i:poverty_rate_year1",
+      "moran_i:poverty_rate_year2",
+      "count:tracts_poverty_increased",
+      "count:tracts_poverty_decreased",
+      "count:persistent_hotspots",
+      "population:in_persistent_hotspots"
+    ],
+    "required_formats": ["markdown", "html"],
+    "executive_brief_required": true,
+    "technical_appendix_required": true,
+    "web_map_required": false,
+    "qgis_package_required": true,
+    "print_pdf_required": false
+  },
+
+  "report": {
+    "tone": "plain",
+    "pyramid_lead": "Between [Year1] and [Year2], poverty rates increased in [N] of [Total] census tracts in [Study Area], with [X] tracts showing persistently elevated poverty across both time periods.",
+    "scqa": {
+      "situation": "[Study Area] had a regional poverty rate of [X]% in [Year1], distributed across [N] census tracts.",
+      "complication": "By [Year2], poverty increased in [N] tracts and decreased in [M] tracts. However, [X] tracts remained persistently above [threshold]% poverty across both periods, suggesting structural rather than cyclical need.",
+      "question": "Which communities have seen the most significant change — positive or negative — and which remain chronically high-need regardless of the trend direction?",
+      "answer": "Persistent hot spots, concentrated in [geography], represent the highest-priority intervention targets. Poverty increased most sharply in [area characterization], while [other area] showed the strongest improvement. [Year1]-[Year2] comparisons are complicated by COVID disruption in 2020-2022 data."
+    },
+    "key_findings_draft": []
+  },
+
+  "qa": {
+    "max_null_pct": 10,
+    "min_join_rate": 0.90,
+    "require_morans_gate": true,
+    "flag_institutions": true,
+    "additional_checks": [
+      "Verify tract GEOID match rate between vintages — flag unmatched tracts",
+      "Flag tracts where abs(change) < combined_MOE as 'no significant change'",
+      "Flag GQ-dominated tracts (prison, college) before including in trend analysis",
+      "Check for boundary changes using Census relationship files"
+    ]
+  },
+
+  "_methodology_caveats": [
+    "ACS 5-year rolling overlap: ACS 5-year estimates are rolling averages. Comparing the 2015-2019 estimate to the 2018-2022 estimate means three years of data (2018-2019) appear in both. The estimates are not fully independent — this attenuates apparent change. For cleaner trend lines, compare non-overlapping windows (e.g., 2010-2014 vs 2015-2019).",
+    "COVID disruption on 2020-2022: ACS data collection was severely disrupted in 2020 (low response rates, changed methodology). The 2020 1-year ACS was not published. The 2018-2022 5-year estimates partially incorporate COVID-era data. Treat any vintage containing 2020-2022 as potentially noisy and flag in the executive summary.",
+    "Tract boundary changes: Census tracts are periodically redrawn, most substantially after each decennial census. Comparing 2019 (2010-boundary) to 2022 (2020-boundary) estimates requires a population-weighted crosswalk. Document crosswalk method in the technical appendix.",
+    "Displacement vs improvement: A declining poverty rate in a tract may reflect genuine economic improvement, or it may reflect displacement of low-income residents by rising rents. Cross-check with rent_burden_change and median_income_change. If rent burden rose while poverty fell, displacement is a plausible mechanism.",
+    "MOE on change estimates: The standard error of a change estimate is sqrt(MOE1² + MOE2²) / 1.645. Many tract-level change estimates will be statistically insignificant. Do not over-interpret small changes in low-population tracts."
+  ],
+
+  "handoff_log": []
+}

@@ -1,0 +1,93 @@
+<?xml version="1.0" ?>
+<qgis version="3.22.16-Białowieża" projectname="Poverty Analysis — Douglas County, NE">
+  <projectCrs>
+    <spatialrefsys>
+      <authid>EPSG:4269</authid>
+    </spatialrefsys>
+  </projectCrs>
+  <title>Poverty Analysis — Douglas County, NE</title>
+  <mapcanvas name="theMapCanvas">
+    <extent>
+      <xmin>-96.125</xmin>
+      <ymin>41.175000000000004</ymin>
+      <xmax>-95.57499999999999</xmax>
+      <ymax>41.725</ymax>
+    </extent>
+  </mapcanvas>
+  <projectlayers>
+    <maplayer type="vector" geometry="Polygon" id="Sample_Tracts_8e089356" name="Sample Tracts">
+      <datasource>./data/sample_tracts.gpkg|layername=sample_tracts</datasource>
+      <layername>Sample Tracts</layername>
+      <provider>ogr</provider>
+      <srs>
+        <spatialrefsys>
+          <authid>EPSG:4269</authid>
+        </spatialrefsys>
+      </srs>
+      <renderer-v2 type="graduatedSymbol" attr="poverty_rate" graduatedMethod="GraduatedColor">
+        <ranges>
+          <range lower="0.1" upper="0.15000000000000002" symbol="0" label="0.10–0.15%" render="true"/>
+          <range lower="0.15000000000000002" upper="0.2" symbol="1" label="0.15–0.20%" render="true"/>
+          <range lower="0.2" upper="0.25" symbol="2" label="0.20–0.25%" render="true"/>
+          <range lower="0.25" upper="0.30000000000000004" symbol="3" label="0.25–0.30%" render="true"/>
+        </ranges>
+        <symbols>
+          <symbol name="0" type="fill">
+            <layer class="SimpleFill">
+              <prop k="color" v="255,255,178,200"/>
+              <prop k="outline_color" v="255,255,255,255"/>
+              <prop k="outline_width" v="0.2"/>
+              <prop k="style" v="solid"/>
+              <prop k="outline_style" v="solid"/>
+            </layer>
+          </symbol>
+          <symbol name="1" type="fill">
+            <layer class="SimpleFill">
+              <prop k="color" v="254,204,104,200"/>
+              <prop k="outline_color" v="255,255,255,255"/>
+              <prop k="outline_width" v="0.2"/>
+              <prop k="style" v="solid"/>
+              <prop k="outline_style" v="solid"/>
+            </layer>
+          </symbol>
+          <symbol name="2" type="fill">
+            <layer class="SimpleFill">
+              <prop k="color" v="253,153,65,200"/>
+              <prop k="outline_color" v="255,255,255,255"/>
+              <prop k="outline_width" v="0.2"/>
+              <prop k="style" v="solid"/>
+              <prop k="outline_style" v="solid"/>
+            </layer>
+          </symbol>
+          <symbol name="3" type="fill">
+            <layer class="SimpleFill">
+              <prop k="color" v="240,59,32,200"/>
+              <prop k="outline_color" v="255,255,255,255"/>
+              <prop k="outline_width" v="0.2"/>
+              <prop k="style" v="solid"/>
+              <prop k="outline_style" v="solid"/>
+            </layer>
+          </symbol>
+        </symbols>
+      </renderer-v2>
+    </maplayer>
+    <maplayer type="raster" id="basemap_carto_light_7744027f" name="CartoDB Positron">
+      <datasource>type=xyz&amp;amp;url=https://basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png&amp;amp;zmax=19&amp;amp;zmin=0</datasource>
+      <layername>CartoDB Positron</layername>
+      <provider>wms</provider>
+      <srs>
+        <spatialrefsys>
+          <authid>EPSG:3857</authid>
+        </spatialrefsys>
+      </srs>
+    </maplayer>
+  </projectlayers>
+  <layer-tree-group name="">
+    <layer-tree-group name="Analysis Layers" checked="Qt::Checked">
+      <layer-tree-layer id="Sample_Tracts_8e089356" name="Sample Tracts" checked="Qt::Checked" source="./data/sample_tracts.gpkg"/>
+    </layer-tree-group>
+    <layer-tree-group name="Basemap" checked="Qt::Checked">
+      <layer-tree-layer id="basemap_carto_light_7744027f" name="CartoDB Positron" checked="Qt::Checked"/>
+    </layer-tree-group>
+  </layer-tree-group>
+</qgis>

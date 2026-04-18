@@ -1,0 +1,172 @@
+{
+  "version": "1.0",
+  "description": "GIS Agent benchmark test suite — 5 diverse test cases for systematic pipeline quality testing",
+  "threshold_client_ready": 22,
+  "threshold_max": 30,
+  "cases": [
+    {
+      "id": "ks-poverty-health",
+      "name": "Kansas Poverty & Health Baseline",
+      "description": "Basic choropleth and summary statistics analysis of poverty and health insurance coverage across Kansas census tracts. The simplest full-pipeline test: ACS retrieval, join, rate computation, choropleth map, summary stats, validation, and report.",
+      "geography": {
+        "state": "Kansas",
+        "fips": "20",
+        "unit": "tract",
+        "approx_features": 830
+      },
+      "data_sources": ["Census ACS 5-year (B17001, B27010)", "TIGER tract boundaries"],
+      "expected_outputs": [
+        "choropleth_map_poverty_rate",
+        "choropleth_map_uninsured_rate",
+        "summary_stats_table",
+        "top_n_tracts_table",
+        "markdown_report",
+        "html_report",
+        "validation_qa_report",
+        "handoff_chain_json"
+      ],
+      "quality_criteria": {
+        "data_quality": "All 830 Kansas tracts present; join rate >= 95%; no tract with NULL poverty rate unless suppressed by Census; Fort Riley tract flagged as institutional",
+        "analysis_rigor": "Rates computed with denominator check; tracts with CV > 40% flagged as unreliable; poverty rate denominator is population for whom poverty status is determined (not total pop)",
+        "map_quality": "Choropleth uses quantile or natural breaks classification with 5 classes; colorblind-safe palette; state outline present; title includes vintage year; legend is readable at 200dpi",
+        "report_quality": "Report leads with key finding (highest-poverty tract or county cluster); methods section names ACS vintage; caveats mention MOE and ACS pooled estimate nature; sources cited"
+      },
+      "agents_involved": ["lead-analyst", "data-retrieval", "data-processing", "spatial-stats", "validation-qa", "report-writer"],
+      "pipeline_stages": ["retrieval", "processing", "analysis", "validation", "reporting"],
+      "difficulty": "basic",
+      "estimated_runtime_minutes": 5
+    },
+    {
+      "id": "ks-healthcare-access",
+      "name": "Kansas Healthcare Access",
+      "description": "Multi-method healthcare access analysis combining point overlay (FQHC and HPSA locations), bivariate choropleth (poverty × uninsured), and hotspot analysis of uninsured rates. Tests the full spatial analysis capability including Moran's I gate before hotspot mapping.",
+      "geography": {
+        "state": "Kansas",
+        "fips": "20",
+        "unit": "tract",
+        "approx_features": 830
+      },
+      "data_sources": ["Census ACS 5-year (B17001, B27010)", "TIGER tract boundaries", "HRSA FQHCs", "HRSA HPSAs"],
+      "expected_outputs": [
+        "choropleth_map_uninsured_rate",
+        "point_overlay_map_fqhc_locations",
+        "bivariate_choropleth_poverty_x_uninsured",
+        "hotspot_map_uninsured_or_moran_report",
+        "summary_stats_table",
+        "markdown_report",
+        "html_report",
+        "validation_qa_report",
+        "handoff_chain_json"
+      ],
+      "quality_criteria": {
+        "data_quality": "FQHC/HPSA points clipped to Kansas; point count sanity-checked against HRSA website; tract join rate >= 95%",
+        "analysis_rigor": "Global Moran's I run before hotspot analysis; if not significant (p > 0.05), hotspot map replaced with 'spatially random' finding note; bivariate uses 3x3 Stevens scheme with correct variable assignment (row=poverty, col=uninsured); FDR correction applied to hotspot results",
+        "map_quality": "Point overlay uses distinct marker style from choropleth background; bivariate legend is full 3x3 grid with axis labels; hotspot map shows HH/HL/LH/LL/NS categories with counts in legend",
+        "report_quality": "Report synthesizes all three methods into a coherent access narrative; does not treat each map as independent; notes data limitations (HRSA lag, FQHC catchment not modeled)"
+      },
+      "agents_involved": ["lead-analyst", "data-retrieval", "data-processing", "spatial-stats", "cartography", "validation-qa", "report-writer"],
+      "pipeline_stages": ["retrieval", "processing", "analysis", "validation", "reporting"],
+      "difficulty": "intermediate",
+      "estimated_runtime_minutes": 10
+    },
+    {
+      "id": "sd-tracts-demo",
+      "name": "South Dakota Demographic Baseline",
+      "description": "Simple demographic baseline for South Dakota census tracts — population, race/ethnicity, income, and poverty. Tests retrieval, processing, and basic choropleth output for a smaller state (~260 tracts) with significant tribal land areas that require careful handling.",
+      "geography": {
+        "state": "South Dakota",
+        "fips": "46",
+        "unit": "tract",
+        "approx_features": 265
+      },
+      "data_sources": ["Census ACS 5-year (B01003, B03002, B19013, B17001)", "TIGER tract boundaries"],
+      "expected_outputs": [
+        "choropleth_map_median_income",
+        "choropleth_map_poverty_rate",
+        "summary_stats_table",
+        "markdown_report",
+        "html_report",
+        "validation_qa_report"
+      ],
+      "quality_criteria": {
+        "data_quality": "All ~265 SD tracts present; tribal land tracts identified and noted (Pine Ridge, Rosebud, Standing Rock); tracts with very high MOE flagged; no suppressed values treated as zero",
+        "analysis_rigor": "Income choropleth uses median (not mean); poverty rate uses correct denominator; racial composition computed as shares not raw counts; small-N tracts noted for unreliable estimates",
+        "map_quality": "Map extent covers all of SD without excessive whitespace; tribal area tracts visually distinguishable if possible; title clear and includes vintage",
+        "report_quality": "Report notes South Dakota's unique demographic context (large Native American population, tribal sovereignty areas); does not make causal claims about income disparities"
+      },
+      "agents_involved": ["lead-analyst", "data-retrieval", "data-processing", "spatial-stats", "validation-qa", "report-writer"],
+      "pipeline_stages": ["retrieval", "processing", "analysis", "validation", "reporting"],
+      "difficulty": "basic",
+      "estimated_runtime_minutes": 5
+    },
+    {
+      "id": "chicago-food-access",
+      "name": "Chicago Food Access Analysis",
+      "description": "Food access analysis for Chicago (Cook County) combining USDA Food Access Research Atlas data with point overlay of grocery stores, and service area / drive-time analysis for food desert identification. Tests federal data retrieval (USDA) and the service area analysis capability.",
+      "geography": {
+        "state": "Illinois",
+        "fips": "17",
+        "county": "Cook",
+        "county_fips": "031",
+        "unit": "tract",
+        "approx_features": 1319
+      },
+      "data_sources": ["USDA Food Access Research Atlas", "Census ACS 5-year (B17001, B19013)", "TIGER tract boundaries", "OpenStreetMap grocery stores (Nominatim/Overpass)"],
+      "expected_outputs": [
+        "choropleth_map_food_desert_indicator",
+        "point_overlay_map_grocery_stores",
+        "summary_stats_table",
+        "markdown_report",
+        "html_report",
+        "validation_qa_report"
+      ],
+      "quality_criteria": {
+        "data_quality": "USDA data joined to Cook County tracts at >= 90% rate; grocery store points clipped to county; known data issue documented (USDA URL sometimes dead — use cached or alternative source)",
+        "analysis_rigor": "Food desert definition clearly stated (USDA definition vs custom distance-based); if service areas used, method described (OSMnx isochrone or Euclidean buffer); correlation with poverty/income computed",
+        "map_quality": "Food desert tracts clearly highlighted; grocery store points visible at city scale; legend distinguishes food desert vs low-access vs adequate access categories",
+        "report_quality": "Report contextualizes Chicago's specific geography (lake on east, dense city core vs suburbs); avoids deficit framing of affected communities; notes USDA definition controversy"
+      },
+      "agents_involved": ["lead-analyst", "data-retrieval", "data-processing", "spatial-stats", "validation-qa", "report-writer"],
+      "pipeline_stages": ["retrieval", "processing", "analysis", "validation", "reporting"],
+      "difficulty": "intermediate",
+      "estimated_runtime_minutes": 15,
+      "known_issues": ["USDA Food Access Atlas download URL changes frequently — verify before running", "OSMnx service area analysis may time out on Pi hardware — fall back to buffer analysis"]
+    },
+    {
+      "id": "la-environmental-justice",
+      "name": "LA County Environmental Justice",
+      "description": "Multi-indicator environmental justice analysis for Los Angeles County combining EPA EJScreen data (PM2.5, proximity to hazardous waste, cancer risk) with demographic vulnerability indicators (poverty, race/ethnicity, linguistic isolation). Tests multi-source data integration and index construction.",
+      "geography": {
+        "state": "California",
+        "fips": "06",
+        "county": "Los Angeles",
+        "county_fips": "037",
+        "unit": "tract",
+        "approx_features": 2346
+      },
+      "data_sources": ["EPA EJScreen (block group → aggregated to tract)", "Census ACS 5-year (B03002, B17001, B16004)", "TIGER tract boundaries"],
+      "expected_outputs": [
+        "choropleth_map_ejscreen_index",
+        "choropleth_map_pm25_percentile",
+        "choropleth_map_cancer_risk",
+        "choropleth_map_vulnerability_composite",
+        "bivariate_choropleth_env_x_vulnerability",
+        "summary_stats_table",
+        "markdown_report",
+        "html_report",
+        "validation_qa_report"
+      ],
+      "quality_criteria": {
+        "data_quality": "EJScreen aggregation from block group to tract documented with methodology (area-weighted or population-weighted); all 2346 LA County tracts present; EJScreen percentile interpretation noted (national vs state percentile)",
+        "analysis_rigor": "Environmental and vulnerability indices constructed with documented component weights; bivariate choropleth identifies double-burden tracts (high env risk + high vulnerability); hotspot analysis optional but recommended for spatial clustering",
+        "map_quality": "County-level maps legible despite 2346-tract density; color schemes distinguish environmental from demographic layers; bivariate uses appropriate diverging or 3x3 scheme",
+        "report_quality": "Report identifies specific high-burden communities by name where possible; cites CalEnviroScreen as context; notes EJScreen methodology limitations; avoids treating model output as ground truth"
+      },
+      "agents_involved": ["lead-analyst", "data-retrieval", "data-processing", "spatial-stats", "cartography", "validation-qa", "report-writer"],
+      "pipeline_stages": ["retrieval", "processing", "analysis", "validation", "reporting"],
+      "difficulty": "advanced",
+      "estimated_runtime_minutes": 20,
+      "known_issues": ["EJScreen block group → tract aggregation requires care; use population-weighted mean for rate indicators", "Large tract count (2346) may slow choropleth rendering — use DPI=150 if needed"]
+    }
+  ]
+}

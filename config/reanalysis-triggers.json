@@ -1,0 +1,167 @@
+{
+  "_meta": {
+    "description": "Configuration for automated re-analysis trigger checks. Controls which analyses are monitored, which data sources are critical vs informational, and how notifications are thresholded.",
+    "schema_version": "1.0",
+    "last_reviewed": "2026-04-03",
+    "maintainer": "GIS Agent / Automated Re-Analysis Trigger"
+  },
+
+  "monitored_analyses": {
+    "mn-poverty-change": {
+      "label": "Minnesota Poverty Change 2017–2022",
+      "auto_monitor": true,
+      "notification_channel": "log",
+      "notes": "ACS multi-vintage analysis — flag immediately when new ACS 5-year vintage drops"
+    },
+    "ks-poverty-health": {
+      "label": "Kansas Poverty & Health Access",
+      "auto_monitor": true,
+      "notification_channel": "log",
+      "notes": "Uses ACS + CDC PLACES + HRSA HPSAs — three active annual/quarterly sources"
+    },
+    "ks-healthcare-access": {
+      "label": "Kansas Healthcare Access",
+      "auto_monitor": true,
+      "notification_channel": "log",
+      "notes": "HRSA HPSAs update quarterly; flag on major designation changes"
+    },
+    "la-environmental-justice": {
+      "label": "Los Angeles Environmental Justice",
+      "auto_monitor": true,
+      "notification_channel": "log",
+      "notes": "EPA EJScreen updates annually in late summer"
+    },
+    "chicago-food-access": {
+      "label": "Chicago Food Access",
+      "auto_monitor": true,
+      "notification_channel": "log",
+      "notes": "USDA SNAP + ACS — flag when ACS vintage changes"
+    },
+    "tx-healthcare-access": {
+      "label": "Texas Healthcare Access",
+      "auto_monitor": true,
+      "notification_channel": "log",
+      "notes": "Large state — re-run cost is high, only flag CRITICAL or HIGH severity"
+    },
+    "sd-tracts-demo": {
+      "label": "South Dakota Census Tracts Demo",
+      "auto_monitor": false,
+      "notes": "Internal demo; do not auto-trigger"
+    },
+    "ks-tracts-demo": {
+      "label": "Kansas Census Tracts Baseline",
+      "auto_monitor": false,
+      "notes": "Baseline geometry only; no analytical sources to track"
+    },
+    "ne-tracts-demo": {
+      "label": "Nebraska Census Tracts Demo",
+      "auto_monitor": false,
+      "notes": "Legacy demo; do not auto-trigger"
+    }
+  },
+
+  "source_criticality": {
+    "acs_5year": {
+      "criticality": "critical",
+      "notes": "Primary social/economic data source for most analyses. A new vintage means new population, poverty, and income estimates — always triggers re-run review.",
+      "rerun_threshold": "minor"
+    },
+    "tiger_tracts": {
+      "criticality": "critical",
+      "notes": "Tract geometries. Changes rarely affect interpretations, but if a geographic boundary revision occurs, re-run is required.",
+      "rerun_threshold": "major"
+    },
+    "tiger_county": {
+      "criticality": "important",
+      "notes": "County boundaries used for reference/overlay. Minor updates rarely affect analysis.",
+      "rerun_threshold": "major"
+    },
+    "tiger_state": {
+      "criticality": "informational",
+      "notes": "State boundary used for outline only. No re-run trigger.",
+      "rerun_threshold": "none"
+    },
+    "cdc_places": {
+      "criticality": "critical",
+      "notes": "Health measures at the tract level. Annual release. New vintage replaces all health outcome estimates.",
+      "rerun_threshold": "minor"
+    },
+    "hrsa_hpsas": {
+      "criticality": "critical",
+      "notes": "Shortage area designations change quarterly. Any new designation file may affect healthcare access scores.",
+      "rerun_threshold": "minor"
+    },
+    "ejscreen": {
+      "criticality": "important",
+      "notes": "EPA EJScreen updates annually. Score changes can shift environmental justice findings.",
+      "rerun_threshold": "minor"
+    },
+    "usda_snap": {
+      "criticality": "important",
+      "notes": "SNAP retailer locations change continuously. Re-run when data is >6 months old.",
+      "rerun_threshold": "minor"
+    },
+    "fcc_broadband": {
+      "criticality": "informational",
+      "notes": "Broadband availability used as secondary infrastructure indicator.",
+      "rerun_threshold": "major"
+    },
+    "epa_superfund": {
+      "criticality": "informational",
+      "notes": "Superfund sites rarely change. Re-run only on major list revision.",
+      "rerun_threshold": "major"
+    },
+    "hud_lihtc": {
+      "criticality": "informational",
+      "notes": "LIHTC properties used as housing resource overlay. Annual update.",
+      "rerun_threshold": "major"
+    },
+    "dot_lodes": {
+      "criticality": "informational",
+      "notes": "Employment origin-destination data. Used in commute/labor market analyses only.",
+      "rerun_threshold": "major"
+    }
+  },
+
+  "notification_thresholds": {
+    "description": "Controls what level of update triggers a notification or rerun flag.",
+    "levels": {
+      "none": "Never flag this source for re-run triggering",
+      "major": "Only flag when 2+ vintages behind or a major boundary/schema change",
+      "minor": "Flag on any newer vintage, even 1 year behind"
+    },
+    "global_minimum_severity": "LOW",
+    "suppress_ok_in_report": false,
+    "flag_unknown_as_warning": true
+  },
+
+  "impact_scoring": {
+    "description": "Weights used by check_reanalysis_needed.py to compute impact scores (0.0–1.0).",
+    "criticality_weights": {
+      "critical": 0.5,
+      "important": 0.3,
+      "informational": 0.1
+    },
+    "primary_source_bonus": 0.25,
+    "vintages_behind_weights": {
+      "1": 0.05,
+      "2": 0.15,
+      "3+": 0.20
+    },
+    "major_change_bonus": 0.10,
+    "severity_thresholds": {
+      "CRITICAL": 0.70,
+      "HIGH": 0.50,
+      "MEDIUM": 0.30,
+      "LOW": 0.01,
+      "OK": 0.0
+    }
+  },
+
+  "schedule": {
+    "description": "When to run automatic re-analysis checks.",
+    "recommended_cron": "0 8 1 * *",
+    "notes": "Run on the 1st of each month at 8am. Catches ACS (December), CDC PLACES (May), and quarterly HRSA updates.",
+    "command": "python scripts/check_reanalysis_needed.py --all --output outputs/reanalysis_report.json"
+  }
+}

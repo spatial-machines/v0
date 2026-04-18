@@ -1,0 +1,94 @@
+{
+  "_description": "Shared project brief. Created by lead-analyst at engagement start. ALL agents read this before working. Answers the 5 questions every agent needs.",
+  "_version": "1.0",
+
+  "project_id": "",
+  "project_title": "",
+  "created_at": "",
+  "created_by": "lead-analyst",
+
+  "client": {
+    "name": "",
+    "type": "",
+    "contact": "",
+    "notes": ""
+  },
+
+  "audience": {
+    "primary_reader": "",
+    "role": "",
+    "technical_level": "low | medium | high",
+    "what_they_are_deciding": "",
+    "what_they_already_believe": "",
+    "political_or_institutional_context": ""
+  },
+
+  "engagement": {
+    "hero_question": "",
+    "deliverable_type": "internal | external | grant | policy | public",
+    "deadline": "",
+    "budget_tier": "quick | standard | deep",
+    "sensitive_findings_to_handle_carefully": []
+  },
+
+  "geography": {
+    "study_area": "",
+    "geographic_unit": "tract | county | block_group | zip | custom",
+    "crs_epsg": "",
+    "bounding_box": null,
+    "known_spatial_issues": []
+  },
+
+  "data": {
+    "primary_sources": [],
+    "vintage": "",
+    "known_data_quality_issues": [],
+    "institutional_areas_to_flag": [],
+    "join_key": "GEOID"
+  },
+
+  "analysis": {
+    "dependent_variable": "",
+    "independent_variables": [],
+    "analysis_types_requested": [],
+    "spatial_weights": "queen",
+    "classification_scheme": "natural_breaks",
+    "k_classes": 5
+  },
+
+  "outputs": {
+    "required_maps": [],
+    "required_charts": [],
+    "required_statistics": [],
+    "required_formats": ["markdown", "html"],
+    "executive_brief_required": false,
+    "technical_appendix_required": false,
+    "web_map_required": false,
+    "qgis_package_required": true,
+    "arcgis_package_required": true,
+    "print_pdf_required": false,
+    "publish_targets": [],
+    "_publish_targets_hint": "Opt-in external publishing targets; e.g. ['arcgis_online']. Empty list = local filesystem only."
+  },
+
+  "report": {
+    "tone": "technical | plain | executive",
+    "pyramid_lead": "",
+    "scqa": {
+      "situation": "",
+      "complication": "",
+      "question": "",
+      "answer": ""
+    },
+    "key_findings_draft": []
+  },
+
+  "qa": {
+    "max_null_pct": 15,
+    "min_join_rate": 0.85,
+    "require_morans_gate": true,
+    "flag_institutions": true
+  },
+
+  "handoff_log": []
+}

@@ -1,0 +1,37 @@
+name: Feature Request
+description: Suggest a new feature or improvement
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the use case or pain point.
+      placeholder: "When I try to analyze flood risk, I need to manually download FEMA data..."
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: How would you like this to work?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Any other approaches you've thought about?
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - New data source
+        - New analysis type
+        - Map / chart improvement
+        - Pipeline / workflow
+        - Documentation
+        - QGIS integration
+        - ArcGIS integration
+        - Other

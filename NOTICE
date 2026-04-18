@@ -1,0 +1,27 @@
+spatial-machines
+Copyright 2025-2026 The spatial-machines Authors
+
+This product includes software developed by The spatial-machines Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+---
+
+This project includes concepts and methodology inspired by:
+
+- SpatialAnalysisAgent by Akinboyewa et al. (Penn State)
+  https://github.com/Teakinboyewa/SpatialAnalysisAgent
+  Licensed under GPL-3.0
+
+- Autonomous GIS research by Ning et al. (Penn State / U. South Carolina)
+  doi:10.1080/17538947.2023.2278895

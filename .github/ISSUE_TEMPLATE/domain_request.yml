@@ -1,0 +1,40 @@
+name: Domain Request
+description: Request a new analysis domain, data source, or methodology template
+labels: ["domain-request"]
+body:
+  - type: textarea
+    id: domain
+    attributes:
+      label: What domain or data source?
+      description: Describe the analysis area, data source, or methodology you'd like supported.
+      placeholder: "Australian Bureau of Statistics demographic data for Statistical Areas..."
+    validations:
+      required: true
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use case
+      description: What kind of analysis would this enable?
+    validations:
+      required: true
+  - type: textarea
+    id: data-source
+    attributes:
+      label: Data source details
+      description: API endpoint, documentation link, or download URL if applicable.
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type
+      options:
+        - New data source (API or download)
+        - New analysis methodology
+        - New domain template
+        - New geographic coverage (non-US)
+        - Other
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Would you contribute this?
+      options:
+        - label: I'm willing to write the fetch script or template myself (with guidance)

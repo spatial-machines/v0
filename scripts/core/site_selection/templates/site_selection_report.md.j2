@@ -1,0 +1,134 @@
+# Site Selection Report: {{ brand_name }}
+
+**Study Area:** {{ study_area }}
+**Generated:** {{ generated_at }}
+
+---
+
+## Executive Summary
+
+1. **{{ brand_count }}** {{ brand_name }} locations identified in the study area{% if competitor_count > 0 %}, alongside **{{ competitor_count }}** competitor locations{% endif %}.
+2. {% if whitespace_count > 0 %}**{{ whitespace_count }}** underserved zones identified where demand exceeds current coverage.{% else %}The study area shows adequate brand coverage with limited white space.{% endif %}
+3. {% if candidates|length > 0 %}Top candidate site at ({{ candidates[0].lat }}, {{ candidates[0].lon }}) with demand score **{{ candidates[0].demand_score }}** and estimated {{ candidates[0].pop_within_1mi|int }} population within 1 mile.{% else %}No candidate sites generated for this analysis.{% endif %}
+
+---
+
+## Market Overview
+
+### Brand Presence
+
+| Metric | Value |
+|--------|-------|
+| Brand | {{ brand_name }} |
+| Locations in Study Area | {{ brand_count }} |
+| Trade Area Method | {{ trade_area_mode }} |
+
+### Competitor Landscape
+
+{% if competitor_names|length > 0 %}
+| Competitor | Status |
+|------------|--------|
+{% for comp in competitor_names %}| {{ comp }} | Tracked |
+{% endfor %}
+
+**Total competitor locations:** {{ competitor_count }}
+{% else %}
+No competitors tracked for this analysis.
+{% endif %}
+
+---
+
+## Trade Area Analysis
+
+Trade areas computed using **{{ trade_area_mode }}** method.
+
+{% if drivetime_summary|length > 0 %}
+### Drive-Time Demographics (Sample Locations)
+
+{% for loc in drivetime_summary %}
+#### {{ loc.name }}
+
+| Ring | Population | Households | Median Income | Daytime Pop |
+|------|-----------|------------|---------------|-------------|
+{% for ring_name, stats in loc.rings.items() %}| {{ ring_name }} | {{ "{:,}".format(stats.population) }} | {{ "{:,}".format(stats.households) }} | ${{ "{:,}".format(stats.median_household_income) }} | {{ "{:,}".format(stats.daytime_population) }} |
+{% endfor %}
+
+{% endfor %}
+{% else %}
+Drive-time demographic data not available for this run.
+{% endif %}
+
+---
+
+## White Space Analysis
+
+{% if whitespace_count > 0 %}
+**{{ whitespace_count }}** underserved zones identified where population demand exists but brand coverage is absent.
+
+Zones are ranked by a demand proxy: population density x median income index (normalized to 0-100 scale).
+{% else %}
+No significant white space zones identified. The study area appears well-covered by existing locations.
+{% endif %}
+
+---
+
+## Candidate Site Rankings
+
+{% if candidates|length > 0 %}
+| Rank | Latitude | Longitude | Pop (1mi) | Income Index | Competitors | Demand Score |
+|------|----------|-----------|-----------|--------------|-------------|--------------|
+{% for c in candidates %}| {{ c.rank }} | {{ c.lat }} | {{ c.lon }} | {{ "{:,}".format(c.pop_within_1mi) }} | ${{ "{:,}".format(c.income_index) }} | {{ c.competitor_count }} | {{ c.demand_score }} |
+{% endfor %}
+
+### Interpretation
+
+- **Demand Score** combines population density and income index (0-100 scale). Higher = stronger market opportunity.
+- **Pop (1mi)** estimates total residential population within a 1-mile radius.
+- **Competitors** counts competitor brand locations within 1 mile.
+- Top candidates represent zones where demand is highest relative to existing supply.
+{% else %}
+No candidate sites generated. This may be because:
+- `--skip-whitespace` was used
+- No white space zones met the minimum population threshold
+- All zones are already adequately covered
+{% endif %}
+
+---
+
+## Methodology
+
+### Pipeline Steps
+
+1. **Brand Resolution** — Resolved "{{ brand_name }}" to OSM tags via brand lookup table
+2. **Study Area** — {% if trade_area_mode == "buffer" %}Bounding box with buffer-based trade areas{% else %}Bounding box with isochrone-based trade areas{% endif %}
+3. **POI Retrieval** — Queried OpenStreetMap via Overpass API for brand and competitor locations
+4. **Trade Areas** — Computed {{ trade_area_mode }} trade areas around each brand location
+5. **Demographic Enrichment** — Area-weighted Census ACS 5-year estimates at tract level
+6. **Drive-Time Population** — Ring-differenced demographics at each travel-time threshold
+7. **White Space Analysis** — Dissolved trade areas, subtracted from study area, ranked uncovered zones
+8. **Candidate Generation** — Population-weighted centroids with minimum separation constraint
+9. **Scoring** — Demand proxy: normalized population density x income index
+
+### Data Sources
+
+| Source | Vintage | Usage |
+|--------|---------|-------|
+| OpenStreetMap (Overpass API) | Current | Brand & competitor locations |
+| US Census ACS 5-Year | 2022 | Demographics (population, income, age) |
+| Census TIGER/Line | 2022 | Tract geometries |
+
+---
+
+## Caveats & Limitations
+
+- **OSM completeness**: OpenStreetMap coverage varies by region. Some brand locations may be missing or outdated. Cross-reference with brand store locators for production use.
+- **Isochrone accuracy**: Drive-time isochrones use OSMnx street network data. Actual drive times vary with traffic, time of day, and road conditions.
+- **Buffer approximation**: Buffer-mode trade areas are circular and do not account for road network topology.
+- **Daytime population**: Estimated as 1.3x residential population in high-employment tracts. For precise daytime estimates, use LEHD LODES WAC data.
+- **Income index**: Area-weighted median household income — a proxy for spending power, not direct consumer spend.
+- **Candidate placement**: Population-weighted centroids are theoretical optima. Actual site viability depends on zoning, parcel availability, and lease costs.
+- **Temporal lag**: Census ACS 5-year estimates have a 2-3 year lag. Recent population shifts may not be captured.
+
+---
+
+*Generated by GIS Agent — Site Selection Pipeline*

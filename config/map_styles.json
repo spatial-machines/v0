@@ -1,0 +1,420 @@
+{
+  "version": 1,
+  "description": "Unified map style registry for spatial-machines. Defines complete visual profiles per map family, expanded palettes, pattern fills, typography rules, and domain-to-palette mappings.",
+
+  "families": {
+    "thematic_choropleth": {
+      "description": "Rate/percentage data on polygon areas. The data IS the visual — no basemap, no scale bar.",
+      "fill": {
+        "opacity": 0.85,
+        "missing_color": "#d0d0d0",
+        "missing_label": "No data"
+      },
+      "stroke": {
+        "_note": "Thin dark gray interior strokes define adjacent polygons; boundary stroke is thicker for the overall study area outline.",
+        "interior": {"color": "#444444", "width": 0.3, "style": "solid", "alpha": 0.6},
+        "boundary": {"color": "#222222", "width": 0.6, "style": "solid"}
+      },
+      "labels": {
+        "enabled_threshold": 50,
+        "font_size": 7.5,
+        "font_family": "Gill Sans MT, Gill Sans, Calibri, sans-serif",
+        "font_weight": "normal",
+        "color": "#333333",
+        "halo": true,
+        "halo_color": "#ffffff",
+        "halo_width": 2.0
+      },
+      "legend": {
+        "_note": "Solid white background with subtle border keeps legend readable over any map colors.",
+        "position": "lower right",
+        "fontsize": 9,
+        "title_fontsize": 10,
+        "framealpha": 1.0,
+        "edgecolor": "#666666",
+        "facecolor": "#ffffff",
+        "borderpad": 1.0,
+        "labelspacing": 0.5,
+        "separator": "\u2013",
+        "decimal_places_auto": true
+      },
+      "title": {
+        "fontsize": 14,
+        "fontweight": "bold",
+        "color": "#222222",
+        "pad": 16
+      },
+      "subtitle": {
+        "fontsize": 10,
+        "fontweight": "normal",
+        "color": "#666666"
+      },
+      "attribution": {
+        "fontsize": 7,
+        "color": "#999999",
+        "position": "bottom-right"
+      },
+      "figure": {
+        "size_state": [14, 10],
+        "size_local": [12, 8],
+        "dpi": 300,
+        "background": "#ffffff",
+        "tight_layout": true
+      },
+      "chrome": {
+        "basemap": false,
+        "scale_bar": false,
+        "north_arrow": false,
+        "inset_locator": true,
+        "dissolved_outline": true
+      }
+    },
+
+    "thematic_categorical": {
+      "description": "Categorical data (hotspots, LISA clusters, land use). Distinct colors per category.",
+      "fill": {
+        "opacity": 0.85,
+        "missing_color": "#d0d0d0",
+        "missing_label": "Not Significant"
+      },
+      "stroke": {
+        "interior": {"color": "#ffffff", "width": 0.15, "style": "solid"},
+        "boundary": {"color": "#555555", "width": 0.35, "style": "solid"}
+      },
+      "labels": {
+        "enabled_threshold": 30,
+        "font_size": 7,
+        "font_family": "Gill Sans MT, Gill Sans, Calibri, sans-serif",
+        "halo": true,
+        "halo_color": "#ffffff",
+        "halo_width": 2.0
+      },
+      "legend": {
+        "position": "lower right",
+        "fontsize": 9,
+        "title_fontsize": 10,
+        "framealpha": 0.92,
+        "edgecolor": "#cccccc"
+      },
+      "title": {
+        "fontsize": 14,
+        "fontweight": "bold",
+        "color": "#222222",
+        "pad": 16
+      },
+      "attribution": {
+        "fontsize": 7,
+        "color": "#999999"
+      },
+      "figure": {
+        "size_state": [14, 10],
+        "size_local": [12, 8],
+        "dpi": 300,
+        "background": "#ffffff"
+      },
+      "chrome": {
+        "basemap": false,
+        "scale_bar": false,
+        "north_arrow": false,
+        "inset_locator": true,
+        "dissolved_outline": true
+      }
+    },
+
+    "point_overlay": {
+      "description": "Point features on polygon context. Basemap required for orientation.",
+      "fill": {
+        "polygon_opacity": 0.5,
+        "point_opacity": 0.9,
+        "point_size_default": 5,
+        "point_edgecolor": "#1a1a1a",
+        "point_edgewidth": 0.5,
+        "missing_color": "#d0d0d0"
+      },
+      "stroke": {
+        "interior": {"color": "#cccccc", "width": 0.15, "style": "solid"},
+        "boundary": {"color": "#555555", "width": 0.35, "style": "solid"}
+      },
+      "labels": {
+        "enabled_threshold": 25,
+        "font_size": 7,
+        "halo": true,
+        "halo_color": "#ffffff",
+        "halo_width": 2.5
+      },
+      "legend": {
+        "position": "upper right",
+        "fontsize": 9,
+        "framealpha": 0.92
+      },
+      "title": {
+        "fontsize": 14,
+        "fontweight": "bold",
+        "pad": 16
+      },
+      "attribution": {
+        "fontsize": 7,
+        "color": "#999999"
+      },
+      "figure": {
+        "size_state": [14, 10],
+        "size_local": [12, 8],
+        "dpi": 300,
+        "background": "#ffffff"
+      },
+      "chrome": {
+        "basemap": true,
+        "basemap_provider": "CartoDB.Positron",
+        "scale_bar": true,
+        "north_arrow": false,
+        "inset_locator": true,
+        "dissolved_outline": true
+      }
+    },
+
+    "reference": {
+      "description": "Geographic orientation and reference. All chrome required.",
+      "fill": {
+        "opacity": 0.3,
+        "missing_color": "#e8e8e8"
+      },
+      "stroke": {
+        "interior": {"color": "#aaaaaa", "width": 0.3, "style": "solid"},
+        "boundary": {"color": "#333333", "width": 0.5, "style": "solid"}
+      },
+      "labels": {
+        "enabled_threshold": 100,
+        "font_size": 8,
+        "halo": true,
+        "halo_color": "#ffffff",
+        "halo_width": 2.0
+      },
+      "figure": {
+        "size_state": [14, 10],
+        "size_local": [12, 8],
+        "dpi": 300,
+        "background": "#f8f8f8"
+      },
+      "chrome": {
+        "basemap": true,
+        "basemap_provider": "CartoDB.Positron",
+        "scale_bar": true,
+        "north_arrow": true,
+        "inset_locator": false,
+        "dissolved_outline": false
+      }
+    },
+
+    "raster_surface": {
+      "description": "Continuous raster data (DEM, hillshade, NDVI). The raster IS the basemap.",
+      "fill": {
+        "opacity": 1.0
+      },
+      "stroke": {
+        "boundary": {"color": "#333333", "width": 0.5, "style": "solid"}
+      },
+      "legend": {
+        "position": "lower right",
+        "fontsize": 9,
+        "type": "colorbar"
+      },
+      "figure": {
+        "size_state": [14, 10],
+        "size_local": [12, 8],
+        "dpi": 300,
+        "background": "#ffffff"
+      },
+      "chrome": {
+        "basemap": false,
+        "scale_bar": true,
+        "north_arrow": true,
+        "inset_locator": true,
+        "dissolved_outline": true
+      }
+    }
+  },
+
+  "palettes": {
+    "sequential": {
+      "poverty":              {"cmap": "YlOrRd",  "scheme": "natural_breaks", "k": 5, "notes": "Warm for deprivation/risk"},
+      "uninsured":            {"cmap": "YlOrRd",  "scheme": "natural_breaks", "k": 5, "notes": "Warm for lack-of-coverage"},
+      "environmental_risk":   {"cmap": "Reds",    "scheme": "natural_breaks", "k": 5, "notes": "Pure red for hazard/toxicity"},
+      "income":               {"cmap": "YlGnBu",  "scheme": "natural_breaks", "k": 5, "notes": "Cool for positive metric"},
+      "population":           {"cmap": "YlGnBu",  "scheme": "natural_breaks", "k": 5, "notes": "Cool for counts/density"},
+      "access":               {"cmap": "RdPu",    "scheme": "natural_breaks", "k": 5, "notes": "Rose for healthcare/service access"},
+      "distance":             {"cmap": "YlOrBr",  "scheme": "natural_breaks", "k": 5, "notes": "Light=close, dark=far"},
+      "education":            {"cmap": "PuBu",    "scheme": "natural_breaks", "k": 5, "notes": "Purple-blue for attainment"},
+      "housing":              {"cmap": "BuGn",    "scheme": "natural_breaks", "k": 5, "notes": "Blue-green for value/affordability"},
+      "crime":                {"cmap": "OrRd",    "scheme": "natural_breaks", "k": 5, "notes": "Orange-red for crime intensity"},
+      "employment":           {"cmap": "GnBu",    "scheme": "natural_breaks", "k": 5, "notes": "Green-blue for employment/labor"},
+      "food_access":          {"cmap": "YlOrRd",  "scheme": "quantile",       "k": 5, "notes": "Warm for food insecurity"},
+      "transit":              {"cmap": "PuBuGn",  "scheme": "quantile",       "k": 5, "notes": "Cool-green for transit access"},
+      "flood_risk":           {"cmap": "Blues",    "scheme": "natural_breaks", "k": 5, "notes": "Blue for water/flood hazard"},
+      "temperature":          {"cmap": "RdYlBu_r","scheme": "equal_interval", "k": 5, "notes": "Warm-cool for temperature (reversed)"},
+      "elevation":            {"cmap": "terrain",  "scheme": "equal_interval", "k": 7, "notes": "Terrain palette for topography"},
+      "vegetation":           {"cmap": "YlGn",    "scheme": "natural_breaks", "k": 5, "notes": "Yellow-green for NDVI/vegetation"},
+      "density":              {"cmap": "magma",    "scheme": "quantile",       "k": 5, "notes": "Perceptually uniform for density"},
+      "neutral":              {"cmap": "viridis",  "scheme": "quantile",       "k": 5, "notes": "Perceptually uniform default"},
+      "neutral_warm":         {"cmap": "inferno",  "scheme": "quantile",       "k": 5, "notes": "Perceptually uniform warm"},
+      "neutral_cool":         {"cmap": "cividis",  "scheme": "quantile",       "k": 5, "notes": "Perceptually uniform, colorblind-safe"}
+    },
+
+    "diverging": {
+      "change_positive":      {"cmap": "RdBu_r",  "scheme": "equal_interval", "k": 5, "notes": "Blue=improvement, red=worsening"},
+      "change_negative":      {"cmap": "RdBu",    "scheme": "equal_interval", "k": 5, "notes": "Red=increase in bad, blue=decrease"},
+      "above_below":          {"cmap": "BrBG",    "scheme": "equal_interval", "k": 5, "notes": "Brown-green diverging"},
+      "correlation":          {"cmap": "coolwarm", "scheme": "equal_interval", "k": 5, "notes": "Cool-warm for correlation"},
+      "residual":             {"cmap": "RdGy",    "scheme": "equal_interval", "k": 5, "notes": "Red-gray for regression residuals"}
+    },
+
+    "categorical": {
+      "hotspot": {
+        "type": "categorical",
+        "colors": {
+          "Hot Spot (99%)": "#d73027",
+          "Hot Spot (95%)": "#fc8d59",
+          "Hot Spot (90%)": "#fee08b",
+          "Not Significant": "#e0e0e0",
+          "Cold Spot (90%)": "#d1e5f0",
+          "Cold Spot (95%)": "#91bfdb",
+          "Cold Spot (99%)": "#4575b4"
+        }
+      },
+      "lisa_cluster": {
+        "type": "categorical",
+        "colors": {
+          "High-High": "#d7191c",
+          "Low-Low": "#2c7bb6",
+          "High-Low": "#fdae61",
+          "Low-High": "#abd9e9",
+          "Not Significant": "#d9d9d9"
+        }
+      },
+      "bivariate_3x3": {
+        "type": "matrix",
+        "matrix": [
+          ["#e8e8e8", "#b5c0da", "#6c83b5"],
+          ["#b8d6be", "#90b2b3", "#567994"],
+          ["#73ae80", "#5a9178", "#2a5a5b"]
+        ],
+        "notes": "Stevens' bivariate teal-purple 3x3"
+      },
+      "land_use": {
+        "type": "categorical",
+        "colors": {
+          "Residential": "#ffeda0",
+          "Commercial": "#fd8d3c",
+          "Industrial": "#bd0026",
+          "Agricultural": "#addd8e",
+          "Forest": "#31a354",
+          "Water": "#6baed6",
+          "Open Space": "#c7e9c0",
+          "Transportation": "#969696",
+          "Institutional": "#9e9ac8",
+          "Vacant": "#f0f0f0"
+        }
+      },
+      "qualitative": {
+        "type": "categorical",
+        "colors": {
+          "A": "#66c2a5", "B": "#fc8d62", "C": "#8da0cb",
+          "D": "#e78ac3", "E": "#a6d854", "F": "#ffd92f",
+          "G": "#e5c494", "H": "#b3b3b3"
+        },
+        "notes": "Set2-based qualitative palette for generic categories"
+      }
+    }
+  },
+
+  "domain_palette_map": {
+    "_description": "Maps analysis domain keywords to palette names. The cartography agent matches field names and project context against these to auto-select the right palette.",
+    "poverty": "poverty", "pct_poverty": "poverty", "poverty_rate": "poverty",
+    "uninsured": "uninsured", "pct_uninsured": "uninsured", "uninsured_rate": "uninsured",
+    "income": "income", "median_income": "income", "per_capita_income": "income", "hh_income": "income",
+    "population": "population", "total_pop": "population", "pop_density": "density",
+    "housing": "housing", "cost_burden": "housing", "rent": "housing", "vacancy": "housing",
+    "education": "education", "pct_bachelors": "education", "pct_no_diploma": "education",
+    "access": "access", "distance_to": "distance", "travel_time": "distance",
+    "crime": "crime", "violent_crime": "crime", "property_crime": "crime",
+    "employment": "employment", "unemployment": "employment", "labor_force": "employment",
+    "food_access": "food_access", "food_desert": "food_access",
+    "transit": "transit", "transit_score": "transit", "ridership": "transit",
+    "flood": "flood_risk", "flood_zone": "flood_risk", "fema": "flood_risk",
+    "temperature": "temperature", "heat": "temperature", "temp": "temperature",
+    "elevation": "elevation", "dem": "elevation", "slope": "elevation",
+    "vegetation": "vegetation", "ndvi": "vegetation", "canopy": "vegetation",
+    "environmental": "environmental_risk", "ejscreen": "environmental_risk", "pollution": "environmental_risk",
+    "change": "change_positive", "shift": "change_positive", "growth": "change_positive",
+    "decline": "change_negative", "loss": "change_negative",
+    "hotspot": "hotspot", "gi_star": "hotspot", "gi_bin": "hotspot",
+    "lisa": "lisa_cluster", "cluster": "lisa_cluster", "moran": "lisa_cluster"
+  },
+
+  "patterns": {
+    "_description": "Hatching and pattern fill options for accessibility and print. Use when color alone is insufficient to distinguish categories.",
+    "styles": {
+      "diagonal_right": {"hatch": "///", "description": "Diagonal lines (right-leaning)"},
+      "diagonal_left":  {"hatch": "\\\\\\", "description": "Diagonal lines (left-leaning)"},
+      "crosshatch":     {"hatch": "xxx", "description": "Cross-hatching"},
+      "stipple":        {"hatch": "...", "description": "Dot pattern"},
+      "vertical":       {"hatch": "|||", "description": "Vertical lines"},
+      "horizontal":     {"hatch": "---", "description": "Horizontal lines"},
+      "plus":           {"hatch": "+++", "description": "Plus pattern"},
+      "circle":         {"hatch": "ooo", "description": "Circle pattern"}
+    },
+    "use_cases": {
+      "print_bw": "Apply patterns to all classes so map is readable in grayscale",
+      "colorblind": "Add patterns to distinguish classes that are similar after CVD simulation",
+      "emphasis": "Add pattern to a single class (e.g., cross-hatch on 'No Data') for visual emphasis"
+    }
+  },
+
+  "color_ramps_rgb": {
+    "_description": "Pre-computed 5-stop RGB values for color ramps used in QGIS XML generation and non-matplotlib contexts. Each ramp is [low → high].",
+    "YlOrRd":  [[255,255,178], [254,217,118], [254,178,76], [253,141,60], [240,59,32]],
+    "YlGnBu":  [[255,255,204], [161,218,180], [65,182,196], [44,127,184], [37,52,148]],
+    "Greens":  [[237,248,233], [186,228,179], [116,196,118], [49,163,84], [0,109,44]],
+    "Blues":   [[239,243,255], [189,215,231], [107,174,214], [49,130,189], [8,81,156]],
+    "Reds":    [[254,229,217], [252,174,145], [251,106,74], [222,45,38], [165,15,21]],
+    "RdPu":    [[254,235,226], [251,180,185], [247,104,161], [197,27,138], [122,1,119]],
+    "YlOrBr":  [[255,255,212], [254,217,142], [254,153,41], [217,95,14], [153,52,4]],
+    "PuBu":    [[241,238,246], [189,201,225], [116,169,207], [43,140,190], [4,90,141]],
+    "BuGn":    [[237,248,251], [178,226,226], [102,194,164], [44,162,95], [0,109,44]],
+    "OrRd":    [[254,240,217], [253,204,138], [252,141,89], [227,74,51], [179,0,0]],
+    "GnBu":    [[240,249,232], [186,228,188], [123,204,196], [67,162,202], [8,104,172]],
+    "PuBuGn":  [[246,239,247], [189,201,225], [103,169,207], [28,144,153], [1,108,89]],
+    "RdYlBu":  [[215,48,39], [253,174,97], [255,255,191], [171,217,233], [44,123,182]],
+    "BrBG":    [[166,97,26], [223,194,125], [245,245,245], [128,205,193], [1,133,113]],
+    "RdGy":    [[202,0,32], [244,165,130], [255,255,255], [186,186,186], [64,64,64]],
+    "viridis": [[68,1,84], [59,82,139], [33,145,140], [94,201,98], [253,231,37]],
+    "magma":   [[0,0,4], [81,18,124], [183,55,121], [252,137,97], [252,253,191]],
+    "inferno": [[0,0,4], [87,16,110], [188,55,84], [249,142,9], [252,255,164]],
+    "cividis": [[0,32,77], [59,77,107], [124,123,120], [194,171,100], [255,234,70]],
+    "terrain": [[51,102,0], [119,170,68], [204,204,102], [170,136,68], [119,85,51], [238,238,238], [255,255,255]]
+  },
+
+  "inset_locator": {
+    "_description": "Settings for the inset/locator map that shows geographic context ('you are here').",
+    "enabled": true,
+    "position": "upper left",
+    "size": 0.22,
+    "boundary_color": "#333333",
+    "boundary_width": 0.8,
+    "highlight_color": "#ff4444",
+    "highlight_alpha": 0.3,
+    "context_color": "#e8e8e8",
+    "context_boundary": "#aaaaaa",
+    "zoom_out_level": "state"
+  },
+
+  "typography": {
+    "_description": "Editorial font hierarchy. Georgia for titles (authoritative serif), Gill Sans MT for body (humanist sans, Ordnance Survey lineage). Fallback chains ensure cross-platform rendering.",
+    "title": {"family": "Georgia, Palatino Linotype, serif", "size": 15, "weight": "bold", "color": "#1a1a1a"},
+    "subtitle": {"family": "Gill Sans MT, Gill Sans, Calibri, sans-serif", "size": 10, "weight": "normal", "color": "#555555"},
+    "legend_title": {"family": "Gill Sans MT, Gill Sans, Calibri, sans-serif", "size": 10, "weight": "semibold", "color": "#333333"},
+    "legend_label": {"family": "Gill Sans MT, Gill Sans, Calibri, sans-serif", "size": 9, "weight": "normal", "color": "#444444"},
+    "attribution": {"family": "Gill Sans MT, Gill Sans, Calibri, sans-serif", "size": 7, "weight": "normal", "color": "#888888", "style": "italic"},
+    "feature_label": {"family": "Gill Sans MT, Gill Sans, Calibri, sans-serif", "size": 7.5, "weight": "normal", "color": "#333333"},
+    "annotation": {"family": "Gill Sans MT, Gill Sans, Calibri, sans-serif", "size": 8, "weight": "normal", "color": "#333333"}
+  }
+}

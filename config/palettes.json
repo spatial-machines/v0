@@ -1,0 +1,126 @@
+{
+  "_description": "Firm-standard semantic palette registry. Use these aliases to ensure consistent coloring across all maps.",
+  "_usage": "Look up the variable type or semantic meaning, use the specified cmap and settings.",
+
+  "poverty": {
+    "cmap": "YlOrRd",
+    "scheme": "natural_breaks",
+    "k": 5,
+    "reverse": false,
+    "notes": "Warm palette — light yellow (low) to dark red (high poverty)"
+  },
+  "uninsured": {
+    "cmap": "YlOrRd",
+    "scheme": "natural_breaks",
+    "k": 5,
+    "reverse": false,
+    "notes": "Same as poverty — rates of disadvantage use warm sequential"
+  },
+  "income": {
+    "cmap": "YlGnBu",
+    "scheme": "natural_breaks",
+    "k": 5,
+    "reverse": false,
+    "notes": "Cool palette — light (low income) to dark blue (high income)"
+  },
+  "population": {
+    "cmap": "YlGnBu",
+    "scheme": "natural_breaks",
+    "k": 5,
+    "reverse": false,
+    "notes": "Cool sequential for counts/density"
+  },
+  "access": {
+    "cmap": "RdPu",
+    "scheme": "natural_breaks",
+    "k": 5,
+    "reverse": false,
+    "notes": "Rose palette for healthcare/service access metrics"
+  },
+  "distance": {
+    "cmap": "YlOrBr",
+    "scheme": "natural_breaks",
+    "k": 5,
+    "reverse": false,
+    "notes": "Light (close) to dark brown (far) for distance-to-facility"
+  },
+  "education": {
+    "cmap": "PuBu",
+    "scheme": "natural_breaks",
+    "k": 5,
+    "reverse": false,
+    "notes": "Purple-blue for educational attainment"
+  },
+  "housing": {
+    "cmap": "BuGn",
+    "scheme": "natural_breaks",
+    "k": 5,
+    "reverse": false,
+    "notes": "Blue-green for housing value/affordability"
+  },
+  "environmental_risk": {
+    "cmap": "Reds",
+    "scheme": "natural_breaks",
+    "k": 5,
+    "reverse": false,
+    "notes": "Pure red scale for environmental hazard/risk"
+  },
+  "change_positive": {
+    "cmap": "RdBu",
+    "scheme": "equal_interval",
+    "k": 5,
+    "reverse": true,
+    "notes": "Diverging — blue (improvement) center (no change) red (worsening). Reverse so blue=positive."
+  },
+  "change_negative": {
+    "cmap": "RdBu",
+    "scheme": "equal_interval",
+    "k": 5,
+    "reverse": false,
+    "notes": "Diverging — red (increase in bad thing) to blue (decrease). For poverty change etc."
+  },
+  "hotspot": {
+    "_type": "categorical",
+    "colors": {
+      "Hot Spot (99%)": "#d73027",
+      "Hot Spot (95%)": "#fc8d59",
+      "Hot Spot (90%)": "#fee08b",
+      "Not Significant": "#e0e0e0",
+      "Cold Spot (90%)": "#d1e5f0",
+      "Cold Spot (95%)": "#91bfdb",
+      "Cold Spot (99%)": "#4575b4"
+    },
+    "notes": "Standard Gi* significance categories — red=hot, blue=cold, gray=NS"
+  },
+  "lisa_cluster": {
+    "_type": "categorical",
+    "colors": {
+      "High-High": "#d7191c",
+      "Low-Low": "#2c7bb6",
+      "Low-High": "#abd9e9",
+      "High-Low": "#fdae61",
+      "Not Significant": "#d9d9d9"
+    },
+    "notes": "Standard LISA cluster types"
+  },
+  "bivariate_3x3": {
+    "_type": "matrix",
+    "colors": [
+      ["#e8e8e8", "#b5c0da", "#6c83b5"],
+      ["#b8d6be", "#90b2b3", "#567994"],
+      ["#73ae80", "#5a9178", "#2a5a5b"]
+    ],
+    "notes": "Stevens' bivariate color scheme — teal-purple"
+  },
+  "categorical": {
+    "_description": "Qualitative palettes for chart series and categorical legends. Authoritative copy — config/chart_styles.json references by name.",
+    "qualitative":     ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f"],
+    "paired":          ["#a6cee3", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00"],
+    "colorblind_safe": ["#0072B2", "#E69F00", "#009E73", "#CC79A7", "#56B4E9", "#D55E00", "#F0E442", "#000000"]
+  },
+
+  "missing_data": "#d0d0d0",
+  "state_outline": "#333333",
+  "point_fill": "#ffffff",
+  "point_edge": "#1a1a1a"
+}

@@ -1,0 +1,177 @@
+{
+  "_description": "Methodology template: Food Access Analysis (Food Desert Mapping). Pre-fills analysis section with evidence-based method stack for food desert / diet quality work at the census-tract level.",
+  "_methodology_id": "food-access-analysis",
+  "_methodology_version": "1.0",
+  "_based_on": "templates/project_brief.json",
+
+  "project_id": "",
+  "project_title": "Food Access Analysis — [Study Area]",
+  "created_at": "",
+  "created_by": "lead-analyst",
+
+  "client": {
+    "name": "",
+    "type": "public_health_dept | foundation | food_bank | planning_dept | community_org",
+    "contact": "",
+    "notes": "Ask whether the client wants USDA food desert designation or a custom access metric. USDA 2019 data is the standard but may lag actual conditions."
+  },
+
+  "audience": {
+    "primary_reader": "",
+    "role": "Public health planner, food systems coordinator, or grant writer",
+    "technical_level": "low | medium",
+    "what_they_are_deciding": "Where to site new grocery stores, mobile markets, or community gardens; where to target nutrition assistance outreach.",
+    "what_they_already_believe": "Food deserts are concentrated in low-income urban neighborhoods and rural areas.",
+    "political_or_institutional_context": "Food desert framing is contested — some prefer 'food apartheid.' Check with client on preferred language. Dollar stores vs grocery stores is a politically sensitive topic in some communities."
+  },
+
+  "engagement": {
+    "hero_question": "Which census tracts qualify as low-income, low-access food deserts, and what demographic and transportation factors compound residents' inability to reach healthy food?",
+    "deliverable_type": "external | grant | policy",
+    "deadline": "",
+    "budget_tier": "standard",
+    "sensitive_findings_to_handle_carefully": [
+      "Grocery chain naming — avoid naming specific retailers without client approval",
+      "Food desert vs food apartheid language — follow client lead",
+      "Dollar store saturation is a sensitive political topic in some jurisdictions"
+    ]
+  },
+
+  "geography": {
+    "study_area": "",
+    "geographic_unit": "tract",
+    "crs_epsg": "4326",
+    "bounding_box": null,
+    "known_spatial_issues": [
+      "USDA LILA flag uses tract-centroid distance — underestimates access for large rural tracts",
+      "Grocery store point data goes stale quickly — validate against Google Places or OSM before using",
+      "Dollar stores and convenience stores are not counted as grocery stores in USDA methodology"
+    ]
+  },
+
+  "data": {
+    "primary_sources": [
+      {
+        "name": "USDA Food Access Research Atlas",
+        "url": "https://www.ers.usda.gov/data-products/food-access-research-atlas/",
+        "notes": "Download tract-level CSV. Includes lila_flag (low-income, low-access), lalowi1_share, la1and10, vehicle access flags. 2019 vintage is most recent as of 2024."
+      },
+      {
+        "name": "ACS 5-Year Estimates",
+        "url": "https://data.census.gov",
+        "tables": ["B17001 (poverty)", "B08201 (vehicle availability)", "B01003 (population)"],
+        "fetch_script": "fetch_acs_data.py",
+        "notes": "Derive poverty_rate and pct_no_vehicle (households with 0 vehicles / total households)."
+      },
+      {
+        "name": "OSM Grocery Stores",
+        "url": "https://www.openstreetmap.org",
+        "notes": "Download via Overpass API or osmnx. Filter: shop=supermarket, shop=grocery, shop=convenience (exclude convenience for distance calc). Validate against USDA data."
+      },
+      {
+        "name": "CDC PLACES (optional)",
+        "url": "https://chronicdata.cdc.gov",
+        "notes": "Tract-level obesity prevalence. Use as alternate dependent variable if client wants health outcome framing."
+      },
+      {
+        "name": "TIGER/Line Tracts",
+        "url": "https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.html",
+        "fetch_script": "retrieve_tiger.py",
+        "notes": "Use vintage matching ACS data year"
+      }
+    ],
+    "vintage": "2019 (USDA) — note mismatch with ACS if using later year",
+    "known_data_quality_issues": [
+      "USDA Atlas is 2019 vintage — grocery store landscape may have changed significantly post-COVID",
+      "OSM grocery coverage is good in urban areas, patchy in rural areas — validate",
+      "pct_no_vehicle is a proxy for transit dependence — does not capture ride-share or delivery access",
+      "Obesity rate from CDC PLACES is a modeled estimate, not direct survey at tract level"
+    ],
+    "institutional_areas_to_flag": [
+      "College campuses may show low vehicle ownership but high food access via dining halls",
+      "Large group quarters (prisons, nursing homes) distort household-level vehicle access metrics"
+    ],
+    "join_key": "GEOID"
+  },
+
+  "analysis": {
+    "dependent_variable": "obesity_rate",
+    "dependent_variable_alternatives": ["diet_quality_index"],
+    "dependent_variable_notes": "obesity_rate from CDC PLACES if health outcome framing desired. If access-only framing, use lila_flag (binary) as dependent for logistic regression, or skip regression and focus on descriptive/spatial analysis.",
+    "independent_variables": [
+      "lila_flag",
+      "pct_no_vehicle",
+      "poverty_rate",
+      "grocery_distance_km"
+    ],
+    "analysis_types_requested": [
+      "choropleth:lila_flag",
+      "service_areas:grocery_stores:10,20,30min",
+      "dot_density:population_in_food_deserts",
+      "regression:obesity_rate~lila_flag+pct_no_vehicle+poverty_rate+grocery_distance_km",
+      "hotspots:obesity_rate"
+    ],
+    "analysis_notes": {
+      "food_desert_choropleth": "Binary choropleth of lila_flag (red = food desert, white = not). Overlay pct_no_vehicle as proportional symbols. Two-variable visual tells the compound story at a glance.",
+      "service_areas": "Run compute_service_areas.py from grocery store point locations. 10/20/30-minute drive bands. Also run 10/20/30-minute walk bands for urban areas. Flag tracts where >50% of area is outside 30-minute drive.",
+      "dot_density": "Run analyze_dot_density.py. One dot = 100 people in lila_flag=1 tracts. Overlay on street basemap to show population density of food desert residents.",
+      "regression": "OLS with spatial diagnostics. Expect spatial lag — unmet food access clusters geographically. If obesity_rate is dependent, include demographic controls (poverty_rate, pct_minority) and note confounding.",
+      "hotspots": "Gi* on obesity_rate if available, or on lila_share (share of population in food desert conditions per tract)."
+    },
+    "spatial_weights": "queen",
+    "classification_scheme": "natural_breaks",
+    "k_classes": 5
+  },
+
+  "outputs": {
+    "required_maps": [
+      "choropleth:lila_flag",
+      "service_areas:grocery_10_20_30min",
+      "dot_density:food_desert_population",
+      "hotspots:obesity_rate_or_lila_share"
+    ],
+    "required_statistics": [
+      "summary_stats:lila_share",
+      "count:tracts_lila_flag",
+      "population:in_food_deserts",
+      "moran_i:obesity_rate",
+      "regression_table",
+      "coverage_gap:tracts_outside_30min_grocery"
+    ],
+    "required_formats": ["markdown", "html"],
+    "executive_brief_required": true,
+    "technical_appendix_required": true,
+    "web_map_required": false,
+    "qgis_package_required": true,
+    "print_pdf_required": false
+  },
+
+  "report": {
+    "tone": "plain",
+    "pyramid_lead": "[N] census tracts in [Study Area] qualify as low-income, low-access food deserts under USDA criteria, affecting an estimated [X] residents — [Y]% of whom lack a vehicle and live more than 10 miles from the nearest grocery store.",
+    "scqa": {
+      "situation": "[Study Area] spans [N] census tracts. [X] grocery stores serve the region, concentrated in [central/northern/etc.] portions of the study area.",
+      "complication": "[N] tracts qualify as USDA food deserts. [X]% of food desert residents lack vehicle access, and [Y]% live in poverty — compounding barriers to reaching healthy food.",
+      "question": "Which communities face the most severe food access gap, and what mix of distance, poverty, and transportation barriers explains it?",
+      "answer": "The [N] highest-need tracts share three conditions: LILA designation, poverty rates above [X]%, and more than [Y] minutes to the nearest grocery store by car. These tracts are the strongest candidates for intervention."
+    },
+    "key_findings_draft": []
+  },
+
+  "qa": {
+    "max_null_pct": 15,
+    "min_join_rate": 0.85,
+    "require_morans_gate": true,
+    "flag_institutions": true
+  },
+
+  "_methodology_caveats": [
+    "USDA 2019 vintage: The Food Access Research Atlas was last updated in 2019. COVID-19 caused substantial grocery store closures and openings in 2020-2022. Findings reflect pre-pandemic conditions. Supplement with current OSM or commercial data for recent store locations.",
+    "Vehicle access as proxy: pct_no_vehicle is a proxy for transit dependence. It does not capture ride-share, delivery service (Instacart, Amazon Fresh), or informal transportation networks. In some urban areas, zero-vehicle households have better food access than vehicle owners due to transit infrastructure.",
+    "LILA flag thresholds: USDA defines 'low-access' as >1 mile to grocery store (urban) or >10 miles (rural). These thresholds are administrative, not evidence-based behavioral thresholds. Modify with custom distance calculations if client needs a different definition.",
+    "Grocery store definition: USDA methodology excludes dollar stores, convenience stores, and discount stores. Some researchers argue these should be included for rural areas. Document what store types are included in your service area analysis.",
+    "Ecological fallacy: Regression results describe tract-level associations, not individual behavior. A tract with high lila_flag and high obesity_rate does not mean food access causes obesity — confounders (income, stress, built environment) are substantial."
+  ],
+
+  "handoff_log": []
+}

@@ -1,0 +1,35 @@
+{
+  "summary": "Test fixture",
+  "warnings": [],
+  "notes": [],
+  "handoff_type": "lead-analyst",
+  "run_id": "lead-2e8abe3c",
+  "ready_for": "human-review",
+  "created_at": "2026-04-10T18:12:11.573687",
+  "run_plan": {
+    "stages": [
+      "retrieval",
+      "processing",
+      "analysis",
+      "validation",
+      "reporting"
+    ]
+  },
+  "pipeline_status": {
+    "pipeline_complete": true
+  },
+  "validation_status": "PASS",
+  "upstream_handoffs": {
+    "reporting": "rpt-2e8abe3c",
+    "validation": "val-2e8abe3c"
+  },
+  "lead_summary": {
+    "findings": "Test analysis complete",
+    "caveats": "Synthetic data"
+  },
+  "key_outputs": [
+    "outputs/maps/sample_choropleth.png",
+    "outputs/reports/sample_report.html"
+  ],
+  "output_files": []
+}

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spatial Machines: a multi-agent GIS consulting firm on your laptop</title>
+  <meta name="description" content="Nine specialist agents, 134 pages of methodology, 155 production scripts. Open source, Apache-2.0. Runs local.">
+  <meta property="og:title" content="Spatial Machines">
+  <meta property="og:description" content="A multi-agent GIS consulting firm that runs on your laptop.">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <style>
+    :root {
+      --bg: #fafaf7;
+      --fg: #1a1a1a;
+      --muted: #6b6b6b;
+      --link: #0055aa;
+      --code-bg: #f0f0ea;
+      --border: #e5e5df;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f0f0e;
+        --fg: #e8e8e3;
+        --muted: #8a8a85;
+        --link: #6ab0ff;
+        --code-bg: #1a1a18;
+        --border: #2a2a28;
+      }
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      font-size: 17px;
+      line-height: 1.6;
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 64px 24px 120px;
+    }
+    nav {
+      font-size: 0.92rem;
+      color: var(--muted);
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 56px;
+    }
+    nav a { color: var(--muted); border-bottom: none; }
+    nav a:hover { color: var(--fg); }
+    h1 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin: 0 0 6px;
+      letter-spacing: -0.01em;
+    }
+    h1 .logo {
+      display: inline-block;
+      vertical-align: -4px;
+      margin-right: 10px;
+      width: 20px;
+      height: 20px;
+    }
+    .tagline {
+      color: var(--muted);
+      font-size: 1rem;
+      margin: 0 0 44px;
+    }
+    h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 44px 0 14px;
+      letter-spacing: -0.01em;
+    }
+    p { margin: 0 0 14px; }
+    a {
+      color: var(--link);
+      text-decoration: none;
+      border-bottom: 1px solid currentColor;
+    }
+    a:hover { opacity: 0.7; }
+    code, pre {
+      font-family: "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+      font-size: 0.9rem;
+    }
+    code {
+      background: var(--code-bg);
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 14px 16px;
+      overflow-x: auto;
+      margin: 0 0 14px;
+      line-height: 1.5;
+    }
+    pre code { background: none; padding: 0; border-radius: 0; }
+    .demo-placeholder {
+      border: 1px dashed var(--border);
+      border-radius: 4px;
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--muted);
+      margin: 0 0 14px;
+      font-size: 0.92rem;
+    }
+    .muted { color: var(--muted); }
+    .platform-label {
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin: 14px 0 4px;
+      font-family: "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    }
+    footer {
+      margin-top: 72px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    footer a { color: var(--muted); border-bottom-color: var(--border); }
+    footer a:hover { color: var(--fg); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="https://github.com/spatial-machines/spatial-machines">github</a>
+  <a href="https://github.com/spatial-machines/spatial-machines#readme">readme</a>
+  <a href="https://github.com/spatial-machines/spatial-machines/tree/main/docs/wiki">wiki</a>
+  <a href="#install">install</a>
+</nav>
+
+<h1><svg class="logo" viewBox="0 0 24 24" role="img" aria-label="Spatial Machines logo"><rect x="0" y="0" width="7" height="7" fill="currentColor" opacity="0.55"/><rect x="8.5" y="0" width="7" height="7" fill="currentColor" opacity="0.75"/><rect x="17" y="0" width="7" height="7" fill="currentColor" opacity="1"/><rect x="0" y="8.5" width="7" height="7" fill="currentColor" opacity="0.35"/><rect x="8.5" y="8.5" width="7" height="7" fill="currentColor" opacity="0.55"/><rect x="17" y="8.5" width="7" height="7" fill="currentColor" opacity="0.75"/><rect x="0" y="17" width="7" height="7" fill="currentColor" opacity="0.2"/><rect x="8.5" y="17" width="7" height="7" fill="currentColor" opacity="0.35"/><rect x="17" y="17" width="7" height="7" fill="currentColor" opacity="0.55"/></svg>Spatial Machines</h1>
+<p class="tagline">A multi-agent GIS consulting firm that runs on your laptop.</p>
+
+<h2>What it is</h2>
+<p>Nine specialist agents: lead analyst, retrieval, processing, spatial stats, cartography, QA, reporting, publishing, peer review. They read from 134 pages of encoded methodology and 155 production scripts. You type a spatial question. They hand back styled maps, an interactive web map, an HTML report, a QGIS project, and optionally an ArcGIS Pro package.</p>
+<p>They run sequentially. Retrieval finishes before processing starts. Processing finishes before the statistician sees it. Each stage writes a structured handoff the next stage reads. The agents work in a pipeline.</p>
+<p>It's not magic. It's what a senior cartographer would do if they had a small team of tireless interns who each read one textbook.</p>
+
+<h2>Watch it work</h2>
+<div class="demo-placeholder">
+  [ 45-second demo video goes here ]<br>
+  <span class="muted">prompt &rarr; 10-minute draft &rarr; 20 minutes of polish &rarr; final map</span>
+</div>
+<p>The agent gets you to a styled, methodologically-sound draft in ten minutes. The last twenty minutes of cartographic judgment are still yours. That's the deal.</p>
+
+<h2 id="install">Try it</h2>
+
+<p class="platform-label">macOS / Linux / WSL</p>
+<pre><code>git clone https://github.com/spatial-machines/spatial-machines.git
+cd spatial-machines
+python -m venv venv &amp;&amp; source venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+python demo.py</code></pre>
+
+<p class="platform-label">Windows (PowerShell)</p>
+<pre><code>git clone https://github.com/spatial-machines/spatial-machines.git
+cd spatial-machines
+python -m venv venv
+venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+copy .env.example .env
+python demo.py</code></pre>
+
+<p>Four minutes to the demo map. Then launch your coding agent inside the repo (<code>claude</code>, <code>codex</code>, whatever you use) and ask it something real:</p>
+<pre><code>What does poverty look like in Cook County, Illinois?</code></pre>
+<p>The system picks up from there.</p>
+
+<h2>Make it yours</h2>
+<p>Fork it. The point isn't to use my system. The point is to run yours. Your data sources, your palette rules, your report templates, your domain logic.</p>
+<p>Need a fetch script for an API your team actually uses? Ask your agent. It writes the code, registers it in the data-source catalog, documents it, wires it into the retrieval role. You review the diff. That's the loop. The system is designed to be extended by the same agents that run it.</p>
+<p>Every customization lands in <code>PATCH.md</code>: intent, files touched, why. When upstream ships an update, you pull, and your agent re-applies your patches by reading the recorded intent. Your work survives my updates.</p>
+<p>And the wiki is a textbook. 134 pages on palette choice, classification methods, MOE handling, FDR correction, colorblind checks. The tradecraft normally locked inside senior practitioners' heads. Use the tool to work. Read the wiki to grow.</p>
+
+<h2>What we didn't build</h2>
+<p class="muted">No SaaS. No accounts. No telemetry. No cloud dependency beyond the public data APIs (Census, EPA, NOAA, the usual). No lock-in to any one coding agent: Claude Code, Codex, OpenCode, Cursor, Aider all work.</p>
+<p class="muted">No "AI-powered" anything in the copy, because it's all AI-powered and saying so is meaningless. No feature matrix. No enterprise tier. No pretending the output is 10/10. The agent gets you to a styled draft fast. The last mile is still cartography, and cartography is still you.</p>
+<p class="muted">No RAG. No vector store. No embeddings. The methodology is written plainly in markdown because that's how cartographers actually learn.</p>
+
+<h2>Why</h2>
+<p>Every "AI does GIS" demo I've watched for the last year has made the same slop. Wrong palette for the data type. No margin-of-error handling on ACS. Legend titles that are raw field names. Projections nobody thought about.</p>
+<p>So I spent six months encoding what a senior cartographer actually does (the palette rules, the MOE flags, the FDR correction on hotspots, the colorblind checks) into a system where the agent has to consult the methodology before it draws anything. It's the tool I wanted to use.</p>
+
+<h2>License</h2>
+<p>Apache-2.0. Use it commercially, fork it, build on it. The name and logo are trademarks. See <a href="https://github.com/spatial-machines/spatial-machines/blob/main/TRADEMARK.md">TRADEMARK.md</a> before shipping something called "Spatial Machines."</p>
+
+<footer>
+  A <a href="https://touchgrass.design">touchgrass.design</a> project.
+  <br>
+  Projected in EPSG:3857 against our own advice.
+</footer>
+
+</body>
+</html>

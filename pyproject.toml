@@ -1,0 +1,123 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "spatial-machines"
+version = "1.0.0"
+description = "AI-native open-source GIS: a multi-agent pipeline that turns spatial questions into maps, charts, reports, QGIS and ArcGIS packages."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+keywords = ["gis", "agents", "llm", "spatial", "cartography", "ai"]
+authors = [
+    { name = "spatial-machines contributors" },
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: GIS",
+    "Operating System :: OS Independent",
+]
+
+# Core runtime deps — the canonical list lives in requirements.txt.
+# pyproject mirrors the same set for `pip install spatial-machines`.
+dependencies = [
+    "geopandas",
+    "pandas",
+    "numpy",
+    "shapely",
+    "pyproj",
+    "pyogrio",
+    "matplotlib",
+    "mapclassify",
+    "folium",
+    "branca",
+    "jinja2",
+    "pyyaml",
+    "Pillow",
+    "requests",
+    "libpysal",
+    "esda",
+    "scipy",
+    "seaborn",
+    "adjustText",
+    "colorspacious",
+    "contextily",
+    "rasterio",
+    "rasterstats",
+    "openpyxl",
+    "pydantic",
+]
+
+[project.optional-dependencies]
+# pip install spatial-machines[esri]
+# Adds the free `arcgis` Python package for ArcGIS Online publishing.
+# arcpy (for ArcGIS Pro .aprx layout upgrades) is NOT pip-installable;
+# it ships with a licensed ArcGIS Pro install.
+esri = ["arcgis>=2.3"]
+
+# pip install spatial-machines[interactive]
+# Adds plotly for interactive HTML chart variants in reports.
+interactive = ["plotly>=5"]
+
+# pip install spatial-machines[stats]
+# Adds OLS confidence bands on scatter_ols relationship charts.
+# Without it we fall back to numpy.polyfit (no CI band).
+stats = ["statsmodels"]
+
+# pip install spatial-machines[postgis]
+# For analyses that read from a local PostGIS database.
+postgis = [
+    "sqlalchemy",
+    "psycopg2-binary",
+    "GeoAlchemy2",
+]
+
+# pip install spatial-machines[network]
+# Street-network isochrones via osmnx (heavy; not usable on Raspberry Pi).
+network = [
+    "osmnx",
+    "networkx",
+]
+
+# pip install spatial-machines[dev]
+# Local development + CI test suite.
+dev = [
+    "pytest>=7",
+    "pytest-cov",
+    "pytest-xdist",
+]
+
+# pip install spatial-machines[all]
+# The kitchen sink — everything above.
+all = [
+    "spatial-machines[esri,interactive,stats,postgis,network,dev]",
+]
+
+[project.urls]
+Homepage      = "https://github.com/yourusername/spatial-machines"
+Documentation = "https://github.com/yourusername/spatial-machines/tree/main/docs"
+Issues        = "https://github.com/yourusername/spatial-machines/issues"
+
+[tool.setuptools]
+# The project is primarily a collection of scripts under scripts/core/ and
+# agent definitions under agents/. We ship those as package data so that
+# `pip install spatial-machines` gives you a usable tree.
+packages = ["scripts"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"*" = ["*.json", "*.md", "*.yaml"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths  = ["tests"]
+markers    = [
+    "slow: mark tests as slow (deselect with '-m \"not slow\"')",
+    "integration: full-pipeline integration tests",
+]

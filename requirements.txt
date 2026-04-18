@@ -1,0 +1,81 @@
+# spatial-machines — Python dependencies
+#
+# Install:  pip install -r requirements.txt
+#
+# Most analyses only need the core dependencies. Optional groups are
+# listed at the bottom — install what you need.
+
+# ── Core (required for all analyses) ──────���──────────────────────────
+geopandas
+pandas
+numpy
+shapely
+pyproj
+pyogrio
+matplotlib
+mapclassify
+folium
+branca
+jinja2
+pyyaml
+Pillow
+requests
+
+# ── Spatial statistics ────────────────���──────────────────────────────
+libpysal
+esda
+scipy
+
+# ── Cartography ──────────���───────────────────────────────────────────
+seaborn
+adjustText
+colorspacious
+contextily
+
+# ── Raster analysis ────────��─────────────────────────────────────────
+rasterio
+rasterstats
+
+# ── Data handling ─────────��──────────────────────────────────────────
+openpyxl
+pydantic
+
+# ── Optional: advanced spatial statistics ───────────────���────────────
+# spreg                    # spatial regression (OLS/GWR)
+# scikit-learn             # clustering, ML
+
+# ── Optional: network analysis ──────────────────────────────────────��
+# osmnx                    # street network isochrones (slow on Pi)
+# networkx                 # graph algorithms (pulled by osmnx)
+
+# ── Optional: PostGIS backend ─────────────��──────────────────────────
+# sqlalchemy               # database ORM
+# psycopg2-binary          # PostgreSQL driver
+# GeoAlchemy2              # spatial extensions for SQLAlchemy
+
+# ── Optional: animation and 3D ──────���────────────────────────────────
+# imageio                  # frame export
+# imageio-ffmpeg           # video encoding
+# plotly                   # interactive 3D / charts
+# scikit-image             # image processing
+
+# ── Optional: hex grids ────────────���───────────────────────────��─────
+# h3                       # Uber H3 hexagonal grid
+
+# ── Optional: statistical charts (enhanced fits) ────────────────────
+# Charts work out of the box with matplotlib + numpy. statsmodels adds
+# OLS fit confidence bands on scatter_ols; without it we fall back to
+# numpy.polyfit (no CI band). Only install if you want the CI ribbon.
+# statsmodels
+
+# ── Optional: ArcGIS Pro packaging ──────────────────────────────────
+# The OSS path requires GDAL ≥ 3.6 with OpenFileGDB write support, which
+# ships with fiona ≥ 1.9 and pyogrio ≥ 0.7 (already in the Core group
+# above). No additional install needed to produce `.gdb` + `.lyrx`.
+#
+# arcpy (Esri, proprietary) is auto-detected when producing a package
+# from inside ArcGIS Pro; it upgrades the output with a pre-built .aprx.
+# Never add arcpy to this file — it is not pip-installable.
+
+# ── Optional: ArcGIS Online / Enterprise publishing (v1.1, planned) ─
+# arcgis                   # Esri Python API; free tier works with AGOL

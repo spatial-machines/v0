@@ -1,0 +1,214 @@
+{
+  "brands": [
+    {
+      "name": "Starbucks",
+      "category": "coffee",
+      "osm_tags": [["brand", "Starbucks"], ["amenity", "cafe"]],
+      "wikidata": "Q37158",
+      "competitors": ["Dunkin", "Dutch Bros", "Peet's Coffee", "Caribou Coffee"]
+    },
+    {
+      "name": "Dunkin",
+      "category": "coffee",
+      "osm_tags": [["brand", "Dunkin'"], ["amenity", "cafe"]],
+      "wikidata": "Q847743",
+      "competitors": ["Starbucks", "Dutch Bros", "Peet's Coffee", "Tim Hortons"]
+    },
+    {
+      "name": "Dutch Bros",
+      "category": "coffee",
+      "osm_tags": [["brand", "Dutch Bros"], ["amenity", "cafe"]],
+      "wikidata": "Q5765443",
+      "competitors": ["Starbucks", "Dunkin", "Peet's Coffee"]
+    },
+    {
+      "name": "Peet's Coffee",
+      "category": "coffee",
+      "osm_tags": [["brand", "Peet's Coffee"], ["amenity", "cafe"]],
+      "wikidata": "Q1094101",
+      "competitors": ["Starbucks", "Dunkin", "Dutch Bros"]
+    },
+    {
+      "name": "McDonald's",
+      "category": "qsr",
+      "osm_tags": [["brand", "McDonald's"], ["amenity", "fast_food"]],
+      "wikidata": "Q38076",
+      "competitors": ["Burger King", "Wendy's", "Chick-fil-A", "Taco Bell"]
+    },
+    {
+      "name": "Burger King",
+      "category": "qsr",
+      "osm_tags": [["brand", "Burger King"], ["amenity", "fast_food"]],
+      "wikidata": "Q177054",
+      "competitors": ["McDonald's", "Wendy's", "Chick-fil-A"]
+    },
+    {
+      "name": "Wendy's",
+      "category": "qsr",
+      "osm_tags": [["brand", "Wendy's"], ["amenity", "fast_food"]],
+      "wikidata": "Q550258",
+      "competitors": ["McDonald's", "Burger King", "Chick-fil-A"]
+    },
+    {
+      "name": "Chick-fil-A",
+      "category": "qsr",
+      "osm_tags": [["brand", "Chick-fil-A"], ["amenity", "fast_food"]],
+      "wikidata": "Q491516",
+      "competitors": ["McDonald's", "Popeyes", "Raising Cane's"]
+    },
+    {
+      "name": "Taco Bell",
+      "category": "qsr",
+      "osm_tags": [["brand", "Taco Bell"], ["amenity", "fast_food"]],
+      "wikidata": "Q752941",
+      "competitors": ["Chipotle", "Qdoba", "Del Taco"]
+    },
+    {
+      "name": "Chipotle",
+      "category": "qsr",
+      "osm_tags": [["brand", "Chipotle"], ["amenity", "fast_food"]],
+      "wikidata": "Q465751",
+      "competitors": ["Taco Bell", "Qdoba", "Moe's Southwest Grill"]
+    },
+    {
+      "name": "Subway",
+      "category": "qsr",
+      "osm_tags": [["brand", "Subway"], ["amenity", "fast_food"]],
+      "wikidata": "Q244457",
+      "competitors": ["Jimmy John's", "Jersey Mike's", "Firehouse Subs"]
+    },
+    {
+      "name": "Popeyes",
+      "category": "qsr",
+      "osm_tags": [["brand", "Popeyes"], ["amenity", "fast_food"]],
+      "wikidata": "Q2097328",
+      "competitors": ["Chick-fil-A", "KFC", "Raising Cane's"]
+    },
+    {
+      "name": "KFC",
+      "category": "qsr",
+      "osm_tags": [["brand", "KFC"], ["amenity", "fast_food"]],
+      "wikidata": "Q524757",
+      "competitors": ["Popeyes", "Chick-fil-A", "Church's Chicken"]
+    },
+    {
+      "name": "Walmart",
+      "category": "grocery",
+      "osm_tags": [["brand", "Walmart"], ["shop", "supermarket"]],
+      "wikidata": "Q483551",
+      "competitors": ["Target", "Kroger", "Costco", "Aldi"]
+    },
+    {
+      "name": "Target",
+      "category": "grocery",
+      "osm_tags": [["brand", "Target"], ["shop", "department_store"]],
+      "wikidata": "Q1046951",
+      "competitors": ["Walmart", "Costco", "Kohl's"]
+    },
+    {
+      "name": "Kroger",
+      "category": "grocery",
+      "osm_tags": [["brand", "Kroger"], ["shop", "supermarket"]],
+      "wikidata": "Q153417",
+      "competitors": ["Walmart", "Aldi", "Safeway", "Publix"]
+    },
+    {
+      "name": "Aldi",
+      "category": "grocery",
+      "osm_tags": [["brand", "Aldi"], ["shop", "supermarket"]],
+      "wikidata": "Q125054",
+      "competitors": ["Walmart", "Kroger", "Lidl", "Trader Joe's"]
+    },
+    {
+      "name": "Trader Joe's",
+      "category": "grocery",
+      "osm_tags": [["brand", "Trader Joe's"], ["shop", "supermarket"]],
+      "wikidata": "Q688825",
+      "competitors": ["Whole Foods", "Aldi", "Sprouts"]
+    },
+    {
+      "name": "Whole Foods",
+      "category": "grocery",
+      "osm_tags": [["brand", "Whole Foods Market"], ["shop", "supermarket"]],
+      "wikidata": "Q1809448",
+      "competitors": ["Trader Joe's", "Sprouts", "Natural Grocers"]
+    },
+    {
+      "name": "CVS",
+      "category": "pharmacy",
+      "osm_tags": [["brand", "CVS Pharmacy"], ["amenity", "pharmacy"]],
+      "wikidata": "Q2078880",
+      "competitors": ["Walgreens", "Rite Aid"]
+    },
+    {
+      "name": "Walgreens",
+      "category": "pharmacy",
+      "osm_tags": [["brand", "Walgreens"], ["amenity", "pharmacy"]],
+      "wikidata": "Q1591889",
+      "competitors": ["CVS", "Rite Aid"]
+    },
+    {
+      "name": "Rite Aid",
+      "category": "pharmacy",
+      "osm_tags": [["brand", "Rite Aid"], ["amenity", "pharmacy"]],
+      "wikidata": "Q3433273",
+      "competitors": ["CVS", "Walgreens"]
+    },
+    {
+      "name": "Planet Fitness",
+      "category": "gym",
+      "osm_tags": [["brand", "Planet Fitness"], ["leisure", "fitness_centre"]],
+      "wikidata": "Q7201095",
+      "competitors": ["LA Fitness", "Anytime Fitness", "24 Hour Fitness", "Crunch Fitness"]
+    },
+    {
+      "name": "Anytime Fitness",
+      "category": "gym",
+      "osm_tags": [["brand", "Anytime Fitness"], ["leisure", "fitness_centre"]],
+      "wikidata": "Q4780657",
+      "competitors": ["Planet Fitness", "LA Fitness", "24 Hour Fitness"]
+    },
+    {
+      "name": "LA Fitness",
+      "category": "gym",
+      "osm_tags": [["brand", "LA Fitness"], ["leisure", "fitness_centre"]],
+      "wikidata": "Q6457180",
+      "competitors": ["Planet Fitness", "Anytime Fitness", "24 Hour Fitness"]
+    },
+    {
+      "name": "Shell",
+      "category": "gas_station",
+      "osm_tags": [["brand", "Shell"], ["amenity", "fuel"]],
+      "wikidata": "Q110716465",
+      "competitors": ["Chevron", "ExxonMobil", "BP", "Casey's"]
+    },
+    {
+      "name": "Chevron",
+      "category": "gas_station",
+      "osm_tags": [["brand", "Chevron"], ["amenity", "fuel"]],
+      "wikidata": "Q319642",
+      "competitors": ["Shell", "ExxonMobil", "BP"]
+    },
+    {
+      "name": "BP",
+      "category": "gas_station",
+      "osm_tags": [["brand", "BP"], ["amenity", "fuel"]],
+      "wikidata": "Q152057",
+      "competitors": ["Shell", "Chevron", "ExxonMobil"]
+    },
+    {
+      "name": "7-Eleven",
+      "category": "convenience",
+      "osm_tags": [["brand", "7-Eleven"], ["shop", "convenience"]],
+      "wikidata": "Q259340",
+      "competitors": ["Circle K", "Wawa", "Sheetz", "Casey's"]
+    },
+    {
+      "name": "Dollar General",
+      "category": "discount",
+      "osm_tags": [["brand", "Dollar General"], ["shop", "variety_store"]],
+      "wikidata": "Q145168",
+      "competitors": ["Dollar Tree", "Family Dollar", "Five Below"]
+    }
+  ]
+}

@@ -1,0 +1,176 @@
+{
+  "_description": "Methodology template: Healthcare Access Gap Analysis. Pre-fills analysis section with evidence-based method stack for uninsured rate / preventive care gap work at the census-tract level.",
+  "_methodology_id": "healthcare-access-gap",
+  "_methodology_version": "1.0",
+  "_based_on": "templates/project_brief.json",
+
+  "project_id": "",
+  "project_title": "Healthcare Access Gap Analysis — [Study Area]",
+  "created_at": "",
+  "created_by": "lead-analyst",
+
+  "client": {
+    "name": "",
+    "type": "public_health | health_system | fqhc | county_health_dept | foundation",
+    "contact": "",
+    "notes": "Ask about Medicaid expansion status for the study state(s) — it materially affects baseline uninsurance rates."
+  },
+
+  "audience": {
+    "primary_reader": "",
+    "role": "Health planner, CHC director, or county health officer",
+    "technical_level": "medium",
+    "what_they_are_deciding": "Where to site new FQHCs, target outreach, or make the case for Medicaid expansion.",
+    "what_they_already_believe": "Uninsurance is concentrated in rural areas and communities of color.",
+    "political_or_institutional_context": "Medicaid expansion politics may be sensitive. Frame as access gap, not as partisan argument."
+  },
+
+  "engagement": {
+    "hero_question": "Which census tracts have the highest unmet need for primary care, and what demographic and structural factors explain that gap?",
+    "deliverable_type": "external | policy",
+    "deadline": "",
+    "budget_tier": "standard",
+    "sensitive_findings_to_handle_carefully": [
+      "Medicaid expansion status — frame neutrally",
+      "FQHC site-level data may be politically sensitive if clients are competitors",
+      "Rural vs urban framing may alienate urban stakeholders"
+    ]
+  },
+
+  "geography": {
+    "study_area": "",
+    "geographic_unit": "tract",
+    "crs_epsg": "4326",
+    "bounding_box": null,
+    "known_spatial_issues": [
+      "HPSA designations lag real conditions by 1-3 years",
+      "FQHCs serve variable catchment areas — point-in-polygon overstates access",
+      "Rural tracts are large — centroid-based drive times understate travel burden"
+    ]
+  },
+
+  "data": {
+    "primary_sources": [
+      {
+        "name": "ACS 5-Year Estimates",
+        "url": "https://data.census.gov",
+        "tables": ["S2701 (health insurance)", "B17001 (poverty)", "B01003 (population)"],
+        "fetch_script": "fetch_acs_data.py",
+        "notes": "Use most recent available 5-year vintage"
+      },
+      {
+        "name": "HRSA Health Center Finder (FQHCs)",
+        "url": "https://findahealthcenter.hrsa.gov",
+        "fetch_script": "fetch_federal_data.py",
+        "notes": "Download GeoJSON of all 330 health centers. Filter by state."
+      },
+      {
+        "name": "HRSA HPSA Designations",
+        "url": "https://data.hrsa.gov/data/download",
+        "notes": "Primary care HPSAs at tract or county level. Join on GEOID."
+      },
+      {
+        "name": "TIGER/Line Tracts",
+        "url": "https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.html",
+        "fetch_script": "retrieve_tiger.py",
+        "notes": "Use vintage matching ACS data year"
+      },
+      {
+        "name": "CDC PLACES (optional)",
+        "url": "https://chronicdata.cdc.gov/500-Cities-Places/PLACES-Local-Data-for-Better-Health-Place-Data-202/eav7-hnsx",
+        "notes": "Tract-level preventive care utilization rates. Useful as alternate dependent variable."
+      }
+    ],
+    "vintage": "",
+    "known_data_quality_issues": [
+      "ACS uninsured estimates have high MOEs in low-population tracts",
+      "HPSA scores are ordinal, not continuous — treat carefully in regression",
+      "FQHCs serve sliding-scale populations regardless of insurance status"
+    ],
+    "institutional_areas_to_flag": [
+      "Prisons and group quarters inflate tract population without increasing outpatient demand",
+      "College tracts skew young-healthy — may show low uninsurance but low utilization"
+    ],
+    "join_key": "GEOID"
+  },
+
+  "analysis": {
+    "dependent_variable": "uninsured_rate",
+    "dependent_variable_alternatives": ["preventive_care_rate"],
+    "independent_variables": [
+      "hpsa_score",
+      "fqhc_count",
+      "poverty_rate",
+      "pct_rural"
+    ],
+    "analysis_types_requested": [
+      "choropleth:uninsured_rate",
+      "proportional_symbols:uninsured_count",
+      "overlay:hpsa_designations",
+      "service_areas:fqhc_locations:10,20,30min",
+      "spatial_lag_regression:uninsured_rate~hpsa_score+fqhc_count+poverty_rate+pct_rural",
+      "hotspots:uninsured_rate"
+    ],
+    "analysis_notes": {
+      "choropleth": "Use natural breaks (Jenks) with 5 classes. Highlight HPSA-designated tracts with hatching overlay.",
+      "proportional_symbols": "Use uninsured_count (ACS B27001). Scale circles by population. Overlay on choropleth of poverty_rate.",
+      "service_areas": "Run compute_service_areas.py from FQHC point locations. 10/20/30-minute drive bands. Dissolve by time band. Intersect with tract centroids to flag 'outside 30min coverage.'",
+      "regression": "Run OLS first, check LM diagnostics. Expect spatial lag or error dependence. If rho significant, interpret: spatial diffusion of uninsurance across tract boundaries.",
+      "hotspots": "Getis-Ord Gi* on uninsured_rate. Identify cold spots (high coverage) and hot spots (access deserts)."
+    },
+    "spatial_weights": "queen",
+    "classification_scheme": "natural_breaks",
+    "k_classes": 5
+  },
+
+  "outputs": {
+    "required_maps": [
+      "choropleth:uninsured_rate",
+      "proportional_symbols:uninsured_count",
+      "service_areas:fqhc_10_20_30min",
+      "hotspots:uninsured_rate",
+      "regression:residuals"
+    ],
+    "required_statistics": [
+      "summary_stats:uninsured_rate",
+      "moran_i:uninsured_rate",
+      "regression_table",
+      "coverage_gap_count:tracts_outside_30min"
+    ],
+    "required_formats": ["markdown", "html"],
+    "executive_brief_required": true,
+    "technical_appendix_required": true,
+    "web_map_required": false,
+    "qgis_package_required": true,
+    "print_pdf_required": false
+  },
+
+  "report": {
+    "tone": "plain",
+    "pyramid_lead": "An estimated [X]% of residents in [Study Area] lack health insurance, concentrated in [N] census tracts where HPSA-designated primary care shortages overlap with high poverty rates.",
+    "scqa": {
+      "situation": "[Study Area] has [X] residents across [N] census tracts. Primary care access is the key health equity metric for the region.",
+      "complication": "[X]% are uninsured and [N] tracts are designated Health Professional Shortage Areas, yet only [M] FQHCs serve the area.",
+      "question": "Which tracts represent the highest-priority access gaps, and what structural factors drive them?",
+      "answer": "Tracts with HPSA designation, high poverty, and low FQHC proximity account for [X]% of uninsured residents. Spatial lag regression confirms clustering — high-uninsurance tracts are surrounded by similar tracts."
+    },
+    "key_findings_draft": []
+  },
+
+  "qa": {
+    "max_null_pct": 15,
+    "min_join_rate": 0.90,
+    "require_morans_gate": true,
+    "flag_institutions": true
+  },
+
+  "_methodology_caveats": [
+    "Medicaid expansion: If the state has expanded Medicaid, uninsurance rates reflect post-expansion baseline. Non-expansion states will show systematically higher rates — do not compare across expansion status without adjustment.",
+    "FQHC vs uninsurance distinction: FQHCs are designed to serve uninsured and underinsured patients. High FQHC count does not mean uninsurance is adequately addressed — it may reflect targeted siting in high-need areas. Interpret fqhc_count negative coefficient cautiously.",
+    "HPSA lag: HPSA designations are updated annually but reflect applications submitted 1-3 years prior. A tract may have unmet need without HPSA designation.",
+    "Drive-time assumptions: Service area isochrones assume average road speed and ignore appointment availability, language barriers, and transportation access beyond vehicle ownership.",
+    "ACS MOEs: In low-population tracts, ACS uninsured estimates may have MOEs exceeding the estimate itself. Flag tracts with MOE/estimate > 0.5 in technical appendix."
+  ],
+
+  "handoff_log": []
+}

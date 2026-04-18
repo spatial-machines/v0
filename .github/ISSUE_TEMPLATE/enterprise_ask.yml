@@ -1,0 +1,28 @@
+name: Enterprise Ask
+description: Request for enterprise features (SSO, private data connectors, compliance, managed hosting)
+labels: ["enterprise-ask"]
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: What do you need?
+      description: Describe the enterprise capability you're looking for.
+      placeholder: "We need to connect to our internal PostGIS database over VPN..."
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Organization context
+      description: What kind of organization are you? (Government, NGO, private sector, academic, etc.) How would you use this?
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - Private data connector (Snowflake, BigQuery, PostGIS, etc.)
+        - Authentication / SSO
+        - Compliance (FedRAMP, HIPAA, etc.)
+        - Managed hosting / SaaS
+        - Support contract
+        - Other

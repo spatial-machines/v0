@@ -1,0 +1,26 @@
+{
+  "summary": "Test fixture",
+  "warnings": [],
+  "notes": [],
+  "handoff_type": "qgis-bridge",
+  "run_id": "qgis-2e8abe3c",
+  "ready_for": "qgis-review",
+  "created_at": "2026-04-10T18:12:11.573687",
+  "package_dir": "tests/fixtures/sample-analysis/outputs/qgis/sample-review",
+  "validation_status": "PASS",
+  "package_files": [
+    "project.qgs",
+    "data/sample_tracts.gpkg",
+    "README.md"
+  ],
+  "manifest": {
+    "total_files": 3,
+    "gpkg_count": 1
+  },
+  "upstream_handoff": {
+    "run_id": "lead-2e8abe3c"
+  },
+  "output_files": [
+    "tests/fixtures/sample-analysis/outputs/qgis/sample-review"
+  ]
+}

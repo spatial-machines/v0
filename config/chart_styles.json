@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "description": "Unified chart style registry for spatial-machines. Defines visual profiles per chart family, typography, palette routing, and default figure sizes. Mirrors config/map_styles.json conventions.",
+
+  "families": {
+    "distribution": {
+      "description": "Show the shape of a single variable (histogram, KDE, box, violin). Pairs with choropleth maps to reveal skew and outliers.",
+      "kinds": ["histogram", "kde", "box", "violin"],
+      "default_palette": "neutral_cool",
+      "figure": {"size": [9, 5.5], "dpi": 300, "background": "#ffffff"},
+      "grid": {"enabled": true, "axis": "y", "color": "#e6e6e6", "linewidth": 0.6, "alpha": 0.9},
+      "axes": {"spine_top": false, "spine_right": false, "tick_color": "#666666"},
+      "annotations": {"mean_line": true, "median_line": true, "mean_color": "#c04040", "median_color": "#1f4e79"}
+    },
+
+    "comparison": {
+      "description": "Compare values across categories/geographies (bar, grouped bar, lollipop, dot plot). Default report figure alongside a ranked choropleth.",
+      "kinds": ["bar", "grouped_bar", "lollipop", "dot"],
+      "default_palette": "neutral_cool",
+      "figure": {"size": [10, 6], "dpi": 300, "background": "#ffffff"},
+      "grid": {"enabled": true, "axis": "x", "color": "#e6e6e6", "linewidth": 0.6, "alpha": 0.9},
+      "axes": {"spine_top": false, "spine_right": false, "tick_color": "#666666"},
+      "sort": {"default": "descending", "top_n": 25}
+    },
+
+    "relationship": {
+      "description": "Bivariate / multivariate relationships (scatter, scatter+OLS, correlation heatmap, hexbin). Pairs with bivariate maps.",
+      "kinds": ["scatter", "scatter_ols", "hexbin", "correlation_heatmap"],
+      "default_palette": "neutral",
+      "diverging_palette": "correlation",
+      "figure": {"size": [8, 7], "dpi": 300, "background": "#ffffff"},
+      "grid": {"enabled": true, "axis": "both", "color": "#efefef", "linewidth": 0.5, "alpha": 0.9},
+      "axes": {"spine_top": false, "spine_right": false, "tick_color": "#666666"},
+      "scatter": {"alpha": 0.65, "size": 28, "edgecolor": "#1a1a1a", "edgewidth": 0.3},
+      "ols": {"line_color": "#c04040", "band_color": "#c04040", "band_alpha": 0.15}
+    },
+
+    "timeseries": {
+      "description": "Temporal change (line, area, small multiples over time). Used in change-detection narratives.",
+      "kinds": ["line", "area", "small_multiples"],
+      "default_palette": "qualitative",
+      "figure": {"size": [11, 5.5], "dpi": 300, "background": "#ffffff"},
+      "grid": {"enabled": true, "axis": "y", "color": "#e6e6e6", "linewidth": 0.6, "alpha": 0.9},
+      "axes": {"spine_top": false, "spine_right": false, "tick_color": "#666666"},
+      "line": {"linewidth": 2.0, "marker": "o", "marker_size": 4},
+      "uncertainty": {"band_alpha": 0.15}
+    }
+  },
+
+  "typography": {
+    "title": {"family": "Georgia, Palatino Linotype, serif", "size": 14, "weight": "bold", "color": "#1a1a1a"},
+    "subtitle": {"family": "Gill Sans MT, Gill Sans, Calibri, sans-serif", "size": 10, "weight": "normal", "color": "#555555"},
+    "axis_label": {"family": "Gill Sans MT, Gill Sans, Calibri, sans-serif", "size": 10.5, "weight": "normal", "color": "#333333"},
+    "tick_label": {"family": "Gill Sans MT, Gill Sans, Calibri, sans-serif", "size": 9, "weight": "normal", "color": "#444444"},
+    "legend_title": {"family": "Gill Sans MT, Gill Sans, Calibri, sans-serif", "size": 9.5, "weight": "semibold", "color": "#333333"},
+    "legend_label": {"family": "Gill Sans MT, Gill Sans, Calibri, sans-serif", "size": 9, "weight": "normal", "color": "#444444"},
+    "attribution": {"family": "Gill Sans MT, Gill Sans, Calibri, sans-serif", "size": 7.5, "weight": "normal", "color": "#888888"},
+    "annotation": {"family": "Gill Sans MT, Gill Sans, Calibri, sans-serif", "size": 8.5, "weight": "normal", "color": "#333333"}
+  },
+
+  "palettes_categorical": {
+    "_description": "Categorical palettes — authoritative copy lives in config/palettes.json under the `categorical` key. This block is kept in sync for fast chart-side access; both files must list the same hex values.",
+    "qualitative":     ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f"],
+    "paired":          ["#a6cee3", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00"],
+    "colorblind_safe": ["#0072B2", "#E69F00", "#009E73", "#CC79A7", "#56B4E9", "#D55E00", "#F0E442", "#000000"]
+  },
+
+  "number_format": {
+    "decimal_places_auto": true,
+    "thousands_separator": ",",
+    "pct_symbol": true,
+    "en_dash_ranges": true
+  },
+
+  "attribution_position": "bottom-right",
+
+  "_notes": {
+    "palette_routing": "Chart palettes resolve through config/map_styles.json -> palettes.sequential / diverging via field-name lookup in domain_palette_map, falling back to family default_palette. Categorical charts use palettes_categorical above.",
+    "colorblind": "Run scripts/core/check_colorblind.py on any chart using color to encode category. Prefer colorblind_safe palette for >3 categories."
+  }
+}

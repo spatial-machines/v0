@@ -1,0 +1,61 @@
+# Environment and secrets
+.env
+*.env
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Analysis outputs (generated per-run, not source code).
+# Demo composition scripts are tracked as source code; outputs are not.
+analyses/*/data/
+analyses/*/outputs/
+analyses/*/runs/
+analyses/*/project_brief.json
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# QGIS temp files
+*.qgs~
+
+# Internal docs (not for public repo).
+# The entire folder is internal by convention — add explicit re-includes
+# here (`!docs/internal/<name>.md`) for docs that should be public.
+docs/internal/
+
+# Per-analysis catalog (regenerated; matches the existing analyses/*/data
+# and analyses/*/outputs convention of not tracking generated artifacts)
+analyses/*/data_catalog.json
+
+# Local agent / IDE settings
+.claude/
+
+# Local working data (caches, scratch interim files)
+/data/
+
+# Memory layer is per-fork/per-firm. README documents the convention;
+# actual memory artifacts accumulate locally and don't ship upstream.
+docs/memory/*
+!docs/memory/README.md
+
+# Testing
+.pytest_cache/
+
+venv/
+venv_wsl_backup/
+.venv/
+env/
+.ipynb_checkpoints/
+.coverage
+htmlcov/

@@ -1,0 +1,23 @@
+{
+  "run_id": "prov-2e8abe3c",
+  "task_summary": "Retrieve sample Census data",
+  "created_at": "2026-04-10T18:12:11.573687",
+  "ready_for": "processing",
+  "sources": [
+    {
+      "dataset_id": "acs-2022-poverty",
+      "retrieval_method": "api",
+      "source_name": "Census ACS 5-year",
+      "source_type": "census",
+      "stored_path": "data/raw/sample.csv",
+      "format": "CSV",
+      "name": "Census ACS",
+      "url": "https://api.census.gov",
+      "vintage": "2022"
+    }
+  ],
+  "artifacts": [
+    "data/raw/sample.csv"
+  ],
+  "notes": []
+}

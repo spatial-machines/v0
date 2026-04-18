@@ -1,0 +1,175 @@
+{
+  "_description": "Methodology template: Environmental Justice Screening. Pre-fills analysis section with evidence-based method stack for EJ index / pollution burden work at the census-tract level.",
+  "_methodology_id": "environmental-justice-screening",
+  "_methodology_version": "1.0",
+  "_based_on": "templates/project_brief.json",
+
+  "project_id": "",
+  "project_title": "Environmental Justice Screening — [Study Area]",
+  "created_at": "",
+  "created_by": "lead-analyst",
+
+  "client": {
+    "name": "",
+    "type": "advocacy_org | epa_region | county_health | law_firm | community_group",
+    "contact": "",
+    "notes": "Clarify whether this is for regulatory comment, grant support, community organizing, or internal planning. Framing differs significantly."
+  },
+
+  "audience": {
+    "primary_reader": "",
+    "role": "Environmental planner, EJ advocate, or regulatory analyst",
+    "technical_level": "medium",
+    "what_they_are_deciding": "Which communities to prioritize for pollution remediation, regulatory enforcement, or grant funding.",
+    "what_they_already_believe": "Communities of color and low-income communities bear a disproportionate pollution burden.",
+    "political_or_institutional_context": "EJ findings can be used in regulatory proceedings. Be precise about what the data can and cannot support legally."
+  },
+
+  "engagement": {
+    "hero_question": "Which census tracts face the highest combined pollution burden and socioeconomic vulnerability, and how does that burden compare across demographic groups?",
+    "deliverable_type": "external | policy | grant",
+    "deadline": "",
+    "budget_tier": "standard",
+    "sensitive_findings_to_handle_carefully": [
+      "Race and income correlation — present carefully, do not imply causation",
+      "Named industrial facilities — verify before publishing",
+      "Regulatory determination language — EJScreen is a screening tool, not a legal finding"
+    ]
+  },
+
+  "geography": {
+    "study_area": "",
+    "geographic_unit": "tract",
+    "crs_epsg": "4326",
+    "bounding_box": null,
+    "known_spatial_issues": [
+      "Superfund proximity is Euclidean — does not account for wind/water pathways",
+      "PM2.5 is modeled at ~1km resolution — sub-tract variation not captured",
+      "Industrial site addresses may have geocoding errors — validate against satellite imagery"
+    ]
+  },
+
+  "data": {
+    "primary_sources": [
+      {
+        "name": "EPA EJScreen",
+        "url": "https://www.epa.gov/ejscreen/download-ejscreen-data",
+        "notes": "Download tract-level CSV. Includes pm25_percentile, superfund_proximity, and composite EJ index columns. Use most recent vintage."
+      },
+      {
+        "name": "ACS 5-Year Estimates",
+        "url": "https://data.census.gov",
+        "tables": ["B17001 (poverty)", "B03002 (race/Hispanic origin)", "B01003 (population)"],
+        "fetch_script": "fetch_acs_data.py",
+        "notes": "Derive poverty_rate and pct_minority (non-white or Hispanic per client definition)."
+      },
+      {
+        "name": "EPA Superfund NPL Sites",
+        "url": "https://www.epa.gov/superfund/superfund-data-and-reports",
+        "fetch_script": "fetch_federal_data.py",
+        "notes": "Point layer of National Priorities List sites. Used for proximity calculations and overlay."
+      },
+      {
+        "name": "EPA Facility Registry Service (FRS)",
+        "url": "https://www.epa.gov/frs",
+        "notes": "Industrial facility locations for overlay. Filter by NAICS or permit type as appropriate."
+      },
+      {
+        "name": "TIGER/Line Tracts",
+        "url": "https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.html",
+        "fetch_script": "retrieve_tiger.py",
+        "notes": "Use vintage matching ACS data year"
+      }
+    ],
+    "vintage": "",
+    "known_data_quality_issues": [
+      "EJScreen PM2.5 values are modeled from EPA monitors — not measured at the tract level",
+      "Superfund proximity does not distinguish active vs remediated sites",
+      "pct_minority definition varies — document the exact ACS fields used"
+    ],
+    "institutional_areas_to_flag": [
+      "Industrial zones may overlap residential tracts — check land-use context before flagging as residential exposure",
+      "Prisons inflate pct_minority in some tracts — consider flagging"
+    ],
+    "join_key": "GEOID"
+  },
+
+  "analysis": {
+    "dependent_variable": "ej_index",
+    "dependent_variable_notes": "Composite of pollution burden (pm25_percentile, superfund_proximity) weighted by population vulnerability (poverty_rate, pct_minority). Compute as: ej_index = (pm25_percentile + superfund_proximity_percentile) / 2 * (poverty_pct + minority_pct) / 2, or use EJScreen pre-computed column.",
+    "independent_variables": [
+      "pm25_percentile",
+      "superfund_proximity",
+      "poverty_rate",
+      "pct_minority"
+    ],
+    "analysis_types_requested": [
+      "bivariate_choropleth:poverty_rate:pm25_percentile",
+      "choropleth:ej_index",
+      "hotspots:ej_index",
+      "overlay:industrial_sites",
+      "overlay:superfund_npl"
+    ],
+    "analysis_notes": {
+      "bivariate_choropleth": "Use analyze_bivariate.py with poverty_rate and pm25_percentile. 3×3 grid yields 9 classes. Highlight tracts in top-right cell (high poverty + high pollution) as priority areas.",
+      "ej_index_choropleth": "Use natural breaks with 5 classes. Consider percentile-based classification (quintiles) for comparability with EJScreen national rankings.",
+      "hotspots": "Run Getis-Ord Gi* on ej_index. Flag statistically significant hot spots (z > 1.96) for priority designation.",
+      "industrial_overlay": "Overlay FRS facility points on choropleth. Use size proportional to permitted emission tonnage if available. Annotate major facilities by name.",
+      "regression_note": "Hotspot and bivariate analysis are the primary deliverables. Regression is optional — if run, use OLS with robust SE given potential heteroskedasticity. Do not over-interpret causation."
+    },
+    "spatial_weights": "queen",
+    "classification_scheme": "natural_breaks",
+    "k_classes": 5
+  },
+
+  "outputs": {
+    "required_maps": [
+      "bivariate_choropleth:poverty_rate:pm25_percentile",
+      "choropleth:ej_index",
+      "hotspots:ej_index",
+      "overlay:industrial_sites_on_ej_index"
+    ],
+    "required_statistics": [
+      "summary_stats:ej_index",
+      "summary_stats:pm25_percentile",
+      "moran_i:ej_index",
+      "top_n:ej_index:20",
+      "cross_tab:poverty_quintile:pm25_quintile"
+    ],
+    "required_formats": ["markdown", "html"],
+    "executive_brief_required": true,
+    "technical_appendix_required": true,
+    "web_map_required": false,
+    "qgis_package_required": true,
+    "print_pdf_required": false
+  },
+
+  "report": {
+    "tone": "plain",
+    "pyramid_lead": "[N] census tracts in [Study Area] rank in the top quintile for both pollution burden and socioeconomic vulnerability — placing an estimated [X] residents in the highest-priority environmental justice concern tier.",
+    "scqa": {
+      "situation": "[Study Area] includes [N] census tracts across [counties/jurisdictions]. The region hosts [X] industrial facilities and [Y] Superfund sites.",
+      "complication": "EPA EJScreen data show [X]% of tracts in the top national quartile for PM2.5 burden, disproportionately overlapping with majority-minority, high-poverty communities.",
+      "question": "Which specific tracts face the compounded burden of high pollution and high vulnerability, and what facilities drive exposure?",
+      "answer": "[N] tracts meet the threshold for priority EJ designation under [applicable framework]. These tracts are home to [X] residents, [Y]% of whom are non-white, and [Z]% are below the poverty line."
+    },
+    "key_findings_draft": []
+  },
+
+  "qa": {
+    "max_null_pct": 10,
+    "min_join_rate": 0.90,
+    "require_morans_gate": true,
+    "flag_institutions": true
+  },
+
+  "_methodology_caveats": [
+    "EJScreen is a screening tool, not a regulatory determination: EJScreen results identify communities that may warrant closer attention. They do not constitute a legal finding of disproportionate impact and should not be represented as such in regulatory filings without additional analysis.",
+    "Modeled vs measured data: PM2.5 values in EJScreen are modeled estimates interpolated from monitoring stations, not direct measurements. Spatial resolution is approximately 1km — sub-tract variation is not captured. Measured monitor data should supplement modeled values where available.",
+    "Superfund proximity is Euclidean: The proximity metric measures straight-line distance to the nearest NPL site, not actual exposure pathway. Wind direction, hydrology, and site remediation status are not reflected.",
+    "EJ index composite methodology: Document exactly how the composite index is constructed (EJScreen pre-computed vs custom). Different compositing methods yield different tract rankings — be explicit in the technical appendix.",
+    "Correlation is not causation: High overlap between pct_minority and pollution burden reflects systemic historical patterns. The analysis documents disparity; it does not establish legal causation."
+  ],
+
+  "handoff_log": []
+}

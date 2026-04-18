@@ -1,0 +1,195 @@
+{
+  "_description": "Methodology template: Natural Hazard Exposure Analysis. Pre-fills analysis section with evidence-based method stack for composite hazard × vulnerability exposure work at the census-tract level.",
+  "_methodology_id": "natural-hazard-exposure",
+  "_methodology_version": "1.0",
+  "_based_on": "templates/project_brief.json",
+
+  "project_id": "",
+  "project_title": "Natural Hazard Exposure Analysis — [Study Area]",
+  "created_at": "",
+  "created_by": "lead-analyst",
+
+  "client": {
+    "name": "",
+    "type": "emergency_mgmt | planning_dept | insurance | fema_grantee | climate_adaptation",
+    "contact": "",
+    "notes": "Confirm which hazard types are in scope (flood, wildfire, wind, earthquake, heat). Each requires different data sources. This template covers flood + wildfire as primary hazards."
+  },
+
+  "audience": {
+    "primary_reader": "",
+    "role": "Emergency manager, resilience planner, or climate adaptation officer",
+    "technical_level": "medium",
+    "what_they_are_deciding": "Where to invest in hazard mitigation, which communities need evacuation planning support, and how to prioritize BRIC or HMGP grant applications.",
+    "what_they_already_believe": "Low-income and minority communities are more exposed to natural hazards and less able to recover.",
+    "political_or_institutional_context": "FEMA Equity in Resilience framework emphasizes SVI. Use FEMA language for grant-facing work. Avoid climate change framing if politically sensitive in jurisdiction."
+  },
+
+  "engagement": {
+    "hero_question": "Which census tracts face the highest compound exposure to natural hazards, accounting for both the physical hazard and the social vulnerability of resident populations?",
+    "deliverable_type": "external | policy | grant",
+    "deadline": "",
+    "budget_tier": "standard",
+    "sensitive_findings_to_handle_carefully": [
+      "FEMA flood zone designations affect property insurance — naming specific parcels/neighborhoods can cause alarm",
+      "Wildfire risk maps are politically contested in some Western states",
+      "SVI race/ethnicity components may be sensitive — frame as vulnerability, not as demographic targeting"
+    ]
+  },
+
+  "geography": {
+    "study_area": "",
+    "geographic_unit": "tract",
+    "crs_epsg": "4326",
+    "bounding_box": null,
+    "known_spatial_issues": [
+      "FEMA NFHL flood zones are at parcel/structure level — aggregation to tract requires zonal statistics",
+      "Wildfire risk rasters (USFS FSIM, First Street) are at 30m or 1km resolution — align projection before zonal stats",
+      "SVI is available at tract and county level — confirm which resolution client needs",
+      "Tract centroids may fall in water or non-residential areas — use area-weighted overlay, not centroid"
+    ]
+  },
+
+  "data": {
+    "primary_sources": [
+      {
+        "name": "FEMA National Flood Hazard Layer (NFHL)",
+        "url": "https://msc.fema.gov/portal/home",
+        "notes": "Download DFIRM geodatabase for study area. Extract S_FLD_HAZ_AR layer. Reclassify: Zone A/AE/AH/AO/VE = high risk (1), Zone X-shaded = moderate (0.5), Zone X-unshaded = minimal (0). US-only."
+      },
+      {
+        "name": "USFS Wildfire Hazard Potential (WHP)",
+        "url": "https://www.fs.usda.gov/rds/archive/catalog/RDS-2020-0016-4",
+        "notes": "30m raster. Reclassify to 1-5 scale. Run zonal_stats.py to aggregate mean WHP per tract. Continental US only — Alaska/Hawaii use different products."
+      },
+      {
+        "name": "First Street Foundation Flood/Fire Risk (alternative)",
+        "url": "https://firststreet.org/data-access/",
+        "notes": "Higher resolution than FEMA/USFS. Free for academic/nonprofit use. Check license for commercial client work."
+      },
+      {
+        "name": "CDC/ATSDR Social Vulnerability Index (SVI)",
+        "url": "https://www.atsdr.cdc.gov/placeandhealth/svi/data_documentation_download.html",
+        "notes": "Download tract-level SVI for study state(s). Use RPL_THEMES (overall percentile rank) as socially_vulnerable_population column. Four theme components available for disaggregation."
+      },
+      {
+        "name": "ACS 5-Year Estimates",
+        "url": "https://data.census.gov",
+        "tables": ["B01003 (population)", "B17001 (poverty)", "B03002 (race)"],
+        "fetch_script": "fetch_acs_data.py",
+        "notes": "For population denominator and to supplement SVI with custom vulnerability metrics if needed."
+      },
+      {
+        "name": "TIGER/Line Tracts",
+        "url": "https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.html",
+        "fetch_script": "retrieve_tiger.py",
+        "notes": "Use vintage matching ACS/SVI data year"
+      }
+    ],
+    "vintage": "",
+    "known_data_quality_issues": [
+      "FEMA NFHL coverage is incomplete in some counties — check for unmapped areas before analysis",
+      "USFS WHP does not cover areas east of the Great Plains — use FEMA NFHL flood risk as primary hazard for Eastern US",
+      "SVI is recalculated each year — rankings shift even if underlying conditions are stable",
+      "Zonal statistics of rasters to tract polygons assumes uniform within-tract distribution — flag large tracts"
+    ],
+    "institutional_areas_to_flag": [
+      "Military bases, airports, and large industrial areas may dominate tract-level hazard scores",
+      "Uninhabited or sparsely populated high-hazard tracts skew exposure statistics — weight by population"
+    ],
+    "join_key": "GEOID"
+  },
+
+  "analysis": {
+    "dependent_variable": "exposure_index",
+    "dependent_variable_notes": "Composite: exposure_index = hazard_score × svi_percentile. hazard_score = weighted mean of flood_zone_pct_area and wildfire_risk_mean (normalize each 0-1 before combining). Weight by client priority — equal weights by default.",
+    "independent_variables": [
+      "flood_zone_pct_area",
+      "wildfire_risk_mean",
+      "svi_rpl_themes",
+      "population"
+    ],
+    "derived_fields": [
+      "hazard_score = (flood_zone_normalized + wildfire_risk_normalized) / 2",
+      "exposure_index = hazard_score * svi_rpl_themes",
+      "exposed_population = population * (exposure_index > threshold)"
+    ],
+    "analysis_types_requested": [
+      "bivariate_choropleth:hazard_score:svi_rpl_themes",
+      "zonal_stats:wildfire_risk_raster:tracts",
+      "zonal_stats:flood_zone_pct:tracts",
+      "proportional_symbols:exposed_population",
+      "choropleth:exposure_index",
+      "hotspots:exposure_index"
+    ],
+    "analysis_notes": {
+      "bivariate_choropleth": "Use analyze_bivariate.py with hazard_score and svi_rpl_themes. 3×3 or 2×2 grid. Top-right cell (high hazard + high vulnerability) is the policy priority. Label this cell explicitly in the legend.",
+      "zonal_stats": "Run zonal_stats.py for both rasters. For flood zones: compute pct_area of each hazard zone per tract (intersect NFHL polygons with tracts, compute area fractions). For wildfire: mean WHP value per tract.",
+      "proportional_symbols": "Size circles by exposed_population (population in tracts above exposure_index threshold). Overlay on choropleth of exposure_index. Tells the story of where people actually live in high-hazard areas.",
+      "hotspots": "Gi* on exposure_index. Identify significant clusters of compound exposure. These are the BRIC/HMGP priority areas.",
+      "exposure_threshold": "Define exposure_index threshold for 'high exposure' in consultation with client. Common choices: top quintile (80th percentile), or SVI > 0.75 AND hazard_score > 0.5."
+    },
+    "spatial_weights": "queen",
+    "classification_scheme": "natural_breaks",
+    "k_classes": 5
+  },
+
+  "outputs": {
+    "required_maps": [
+      "bivariate_choropleth:hazard_score:svi_rpl_themes",
+      "proportional_symbols:exposed_population",
+      "choropleth:exposure_index",
+      "hotspots:exposure_index"
+    ],
+    "required_statistics": [
+      "summary_stats:exposure_index",
+      "summary_stats:flood_zone_pct_area",
+      "summary_stats:wildfire_risk_mean",
+      "top_n:exposure_index:20",
+      "population:exposed_above_threshold",
+      "moran_i:exposure_index"
+    ],
+    "required_formats": ["markdown", "html"],
+    "executive_brief_required": true,
+    "technical_appendix_required": true,
+    "web_map_required": false,
+    "qgis_package_required": true,
+    "print_pdf_required": false
+  },
+
+  "report": {
+    "tone": "plain",
+    "pyramid_lead": "[N] census tracts in [Study Area] face high combined natural hazard exposure and social vulnerability, placing an estimated [X] residents at elevated risk with limited capacity to prepare, respond, and recover.",
+    "scqa": {
+      "situation": "[Study Area] spans [N] census tracts across [geography]. The region faces [flood/wildfire/both] hazard risk, with [X]% of tracts in FEMA Special Flood Hazard Areas and [Y]% in high wildfire hazard potential zones.",
+      "complication": "High-hazard areas are not evenly distributed across the population. [X] tracts combine above-average hazard scores with SVI rankings above the [Nth] percentile — meaning residents face outsized physical risk with fewer resources to adapt.",
+      "question": "Which specific communities face the compound burden of high hazard exposure and high social vulnerability, and how many residents do they represent?",
+      "answer": "The [N] highest-priority tracts — identified through a combined hazard × vulnerability index — are home to [X] residents and concentrated in [geography]. These tracts are the strongest candidates for BRIC/HMGP grant targeting and community resilience investment."
+    },
+    "key_findings_draft": []
+  },
+
+  "qa": {
+    "max_null_pct": 15,
+    "min_join_rate": 0.85,
+    "require_morans_gate": true,
+    "flag_institutions": true,
+    "additional_checks": [
+      "Verify NFHL coverage completeness — flag counties with no DFIRM data",
+      "Check WHP raster projection matches tract CRS before zonal stats",
+      "Validate SVI GEOID format matches TIGER tract GEOID (leading zeros)",
+      "Flag tracts with population < 200 — exposure statistics unreliable for very small populations"
+    ]
+  },
+
+  "_methodology_caveats": [
+    "FEMA is US-only: FEMA NFHL and SVI are United States federal products. For international study areas, substitute: UNDRR flood exposure data, JRC flood hazard maps, and INFORM Risk Index or WorldRiskIndex for vulnerability.",
+    "Modeled hazard zones are not guarantees: FEMA flood zones represent the 1% annual chance flood (100-year flood) modeled at the time of the last FIRM update — many FIRMs are 10-20 years old. Climate-adjusted flood risk (First Street) may differ substantially. Wildfire risk models use historical fire behavior, not projected future conditions.",
+    "Exposure index is a policy tool, not an actuarial product: The composite exposure_index is designed to rank and prioritize communities for planning purposes. It should not be used to set insurance rates or make individual property determinations.",
+    "Hazard weight assumptions: Equal weighting of flood and wildfire risk is a default assumption. For coastal counties, flood may dominate. For Western mountain communities, wildfire may be the primary hazard. Adjust weights in consultation with the client and document the rationale.",
+    "SVI and race correlation: SVI's 'Minority Status and Language' theme (Theme 3) explicitly includes race/ethnicity. The composite SVI score therefore partly reflects racial demographics. When presenting bivariate hazard × SVI maps, be precise: you are showing vulnerability, which correlates with but is not identical to race.",
+    "Population weighting matters: Raw exposure_index at the tract level can obscure that some high-scoring tracts are sparsely populated. Always pair choropleth maps with proportional symbols scaled by population to show where people actually live in harm's way."
+  ],
+
+  "handoff_log": []
+}
