@@ -1,5 +1,7 @@
 # spatial-machines
 
+**Site:** [sm.touchgrass.design](https://sm.touchgrass.design)
+
 A decade in GIS. The part of the job I trained for — looking at a map and *thinking*, talking to a client about what they're really asking, iterating on a design until it tells the story — kept getting squeezed by the part nobody asks about: finding the right Census table, fixing CRS mismatches, re-projecting someone's badly-exported shapefile, joining tract IDs that wouldn't join, restyling a legend for the fourth time, formatting exports for a colleague's Pro template.
 
 I built this to get that time back.
@@ -30,38 +32,6 @@ I built this because the people who *should* be doing GIS — public servants, l
 It's also not the right tool yet for **pure raster work at scale** — elevation, NDVI, lidar workflows are supported, but vector and choropleth are where the system shines. v2 will fix that.
 
 And if you want a button-you-click product, **wait**. There's a QGIS plugin coming in v1.1 that wraps the prompt UX. Today, this is a coding-agent-driven system. You'll see Python tracebacks occasionally. If that's a dealbreaker, give it a season.
-
----
-
-## What this actually does, in 60 seconds
-
-You install [Claude Code](https://claude.ai/claude-code) (or Codex CLI, or any agent that reads markdown). You clone this repo. You activate a Python venv. You type:
-
-> *"Map median household income for every census tract in Harris County, TX, and tell me which neighborhoods are statistical hot spots."*
-
-15 minutes later, in `analyses/<your-project>/outputs/`:
-
-- a **styled choropleth map** — palette auto-selected from the field name (the system knows `median_income` wants YlGnBu), breaks chosen statistically, colorblind-checked, with the legend and inset locator placed where they don't fight the data
-- a paired **distribution chart** that shows the spread the map can't, with mean/median lines
-- a **hotspot map** computed via Getis-Ord Gi*, with FDR correction and Moran's I gating (so you don't publish noise)
-- a **QGIS project** (`.qgs`) that opens with the same styling
-- an **ArcGIS Pro package** — file geodatabase + styled `.lyrx` files + a helper script that auto-builds an `.aprx` inside Pro
-- an **interactive web map** in your browser, with toggleable layers and popups
-- a **narrative HTML report** — exec summary, KPIs, embedded visuals, methodology, caveats, sources, all self-contained
-- a **QA scorecard** + an **independent peer review** of the work
-- a **solution graph** — the DAG of every input, operation, and output for the run
-
-You didn't pick the palette. You didn't decide the breaks. You didn't write the report outline. The system applied 134 pages of wiki-encoded standards because it knew what kind of question you asked.
-
-This is the kind of deliverable I used to spend three days on. Now I get a draft in 15 minutes, and I spend the saved time on the part that actually matters — *iterating on the design with the client in the room.*
-
----
-
-## See it before you install
-
-Open **`demos/sedgwick-poverty/preview.html`** in any browser. No Python, no agent, no setup — just a styled map, a chart, and the report scaffold from a real run on Sedgwick County poverty data. The PNGs in `demos/sedgwick-poverty/samples/` are the same outputs unpacked.
-
-That's the bar for what one prompt produces. If it looks worth 10 minutes of setup, the install is below.
 
 ---
 
@@ -146,7 +116,7 @@ Runs a 10-second poverty analysis on bundled Census data for Sedgwick County, KS
 
 Inside the repo, with your venv active, in your agent of choice:
 
-### 🟢 Starter prompts (Census-only, no extra keys)
+### Starter prompts (Census-only, no extra keys)
 
 ```
 What does poverty look like in Cook County, Illinois?
@@ -165,7 +135,7 @@ Rank the top 20 counties in Georgia by uninsured rate. Map and chart them.
 Show me where children under 5 live relative to lead-paint risk in Baltimore.
 ```
 
-### 🟡 Multi-source prompts (need a free NOAA / CDC key)
+### Multi-source prompts (need a free NOAA / CDC key)
 
 ```
 Where in Florida do high flood-risk areas overlap with elderly populations
@@ -177,7 +147,7 @@ For Philadelphia, map diabetes prevalence against walkability (POI density)
 at the tract level. Is there a spatial correlation worth investigating?
 ```
 
-### 🔴 Deep analysis prompts (full pipeline)
+### Deep analysis prompts (full pipeline)
 
 ```
 I'm writing a grant for a rural health clinic in eastern Kentucky.
@@ -195,25 +165,6 @@ the top 10 priority block groups and explain what makes each vulnerable.
 ```
 
 The agent will scope, plan, fetch, process, analyze, render, validate, peer-review, and synthesize — usually 5 to 20 minutes depending on data volume. You'll see every decision narrated as it happens.
-
----
-
-## You don't get a handoff — you get a collaborator
-
-Traditional GIS consulting is a transaction: you hand a brief to an analyst, they disappear for two weeks, they come back with a PDF. If the map is wrong, or the story isn't quite right, or you want it from a different angle — that's another round trip, another invoice, another week.
-
-This flips that. You're in the room with the analyst the whole time.
-
-The agent shows you a draft map. You say *"the legend is covering downtown, move it."* Or *"add supermarkets so people can see why the south side is a food desert."* Or *"this is too busy — strip the water layer."* The agent re-renders, the map gets better, you keep going until it's right.
-
-What this changes:
-
-- **You see the work as it happens.** The agent narrates its decisions — palette, classification method, what caveats apply. You can interrogate every step before delivery.
-- **You steer with plain English.** *"Make the annotations smaller. Use a dark basemap. Same map but for Detroit."* The agent translates.
-- **You learn while you work.** Every back-and-forth is a small cartography or stats lesson. The agent cites the wiki standards it's applying.
-- **You keep the artifacts.** Every run writes style sidecars, a solution graph, and JSON handoffs. Reproducing the same map in QGIS or Pro six months later is "open the package."
-
-This is what "AI-native GIS" actually means to me. Not "there's a chatbot somewhere." Not "the software generated a map." It means the analyst-tool boundary dissolves — *you* are the analyst, the agent is the mechanic, and the two of you iterate until the answer is good. The part of the job I missed is back.
 
 ---
 
@@ -341,15 +292,15 @@ Every run writes to `analyses/<project>/outputs/`:
 
 | Agent | Role |
 |---|---|
-| 🧠 **Lead Analyst** | Orchestrates the pipeline, scopes work, integrates and synthesizes |
-| 📦 **Data Retrieval** | Acquires data from 20+ built-in sources (Census, EPA, CDC, FEMA, NOAA, OSM, …) |
-| ⚙️ **Data Processing** | Cleans, normalizes, joins → analysis-ready GeoPackages with provenance |
-| 📊 **Spatial Stats** | Hotspot (Gi*), LISA, Moran's I, change detection — with FDR correction by default |
-| 🗺️ **Cartography** | Maps **and** statistical charts — distribution, comparison, relationship, time series |
-| ✅ **Validation QA** | Geometry, join rates, null values, structural integrity gates |
-| 📝 **Report Writer** | Pyramid Principle (answer first), HTML + Markdown |
-| 📦 **Site Publisher** | QGIS package, ArcGIS Pro package, optional AGOL publishing |
-| 🔍 **Peer Reviewer** | Independent gate — catches unsupported claims, overconfidence, missing caveats |
+| **Lead Analyst** | Orchestrates the pipeline, scopes work, integrates and synthesizes |
+| **Data Retrieval** | Acquires data from 20+ built-in sources (Census, EPA, CDC, FEMA, NOAA, OSM, …) |
+| **Data Processing** | Cleans, normalizes, joins → analysis-ready GeoPackages with provenance |
+| **Spatial Stats** | Hotspot (Gi*), LISA, Moran's I, change detection — with FDR correction by default |
+| **Cartography** | Maps **and** statistical charts — distribution, comparison, relationship, time series |
+| **Validation QA** | Geometry, join rates, null values, structural integrity gates |
+| **Report Writer** | Pyramid Principle (answer first), HTML + Markdown |
+| **Site Publisher** | QGIS package, ArcGIS Pro package, optional AGOL publishing |
+| **Peer Reviewer** | Independent gate — catches unsupported claims, overconfidence, missing caveats |
 
 Each agent has `agents/<role>/SOUL.md` (mission + boundaries) and `agents/<role>/TOOLS.md` (approved scripts). Read either to understand exactly what each will and won't do.
 
