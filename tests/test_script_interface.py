@@ -43,8 +43,16 @@ def _run_script_help(script_path: Path):
 # Scripts that use sys.argv instead of argparse.
 _KNOWN_NO_ARGPARSE = {"extract_archive.py"}
 
-# Utility modules without a main() entry point — not standalone scripts.
-_UTILITY_MODULES = {"format_utils.py", "handoff_utils.py", "postgis_utils.py", "style_utils.py"}
+# Utility modules without a main() entry point (not standalone scripts).
+_UTILITY_MODULES = {
+    "format_utils.py",
+    "handoff_utils.py",
+    "postgis_utils.py",
+    "style_utils.py",
+    "aprx_scaffold.py",
+    "qgis_env.py",
+    "renderers.py",
+}
 
 
 class TestAllScriptsHaveHelp:
@@ -66,7 +74,7 @@ class TestAllScriptsHaveMainGuard:
     def test_has_raise_systemexit_main(self, script_path):
         if script_path.name in _UTILITY_MODULES:
             pytest.skip(f"{script_path.name} is a utility module, not a standalone script")
-        source = script_path.read_text()
+        source = script_path.read_text(encoding="utf-8")
         tree = ast.parse(source)
 
         # Find the if __name__ == "__main__" block
@@ -96,7 +104,7 @@ class TestAllScriptsHaveMainFunction:
     def test_has_main_with_int_return(self, script_path):
         if script_path.name in _UTILITY_MODULES:
             pytest.skip(f"{script_path.name} is a utility module, not a standalone script")
-        source = script_path.read_text()
+        source = script_path.read_text(encoding="utf-8")
         tree = ast.parse(source)
 
         main_func = None
