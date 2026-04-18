@@ -1,58 +1,41 @@
 # spatial-machines
 
+A multi-agent GIS pipeline that runs on your laptop. Apache-2.0.
+
 **Site:** [sm.touchgrass.design](https://sm.touchgrass.design)
 
-A decade in GIS. The part of the job I trained for — looking at a map and *thinking*, talking to a client about what they're really asking, iterating on a design until it tells the story — kept getting squeezed by the part nobody asks about: finding the right Census table, fixing CRS mismatches, re-projecting someone's badly-exported shapefile, joining tract IDs that wouldn't join, restyling a legend for the fourth time, formatting exports for a colleague's Pro template.
-
-I built this to get that time back.
-
-**spatial-machines** is an AI-coding-agent playbook for GIS. You write a question in plain English. The agent (Claude Code, Codex CLI, whatever you use) reads the project's wiki, fetches the data, processes it, runs the stats, draws the maps, makes the charts, packages the deliverable for QGIS *and* ArcGIS Pro *and* (optionally) ArcGIS Online, writes the report, and hands you back a folder you can use. Then you and the agent iterate until the map tells the truth.
-
-It's not magic. It's 9 specialist agent roles, 134 pages of methodology I wish someone had handed me on day one, and 155 production scripts broken and fixed on real analyses. The drudgery is automated. The cartographic decisions, the story, the conversation stay with you.
-
-> Better than Esri's docs is the bar.
+This is the technical reference for the repo. For the pitch and output preview, see the site.
 
 ---
 
-## Who this is actually for
+## What it is
 
-I built this because the people who *should* be doing GIS — public servants, local planners, journalists, students, lonely-GIS-team-of-one consultants — are getting pushed out of the field by tooling that costs too much, takes too long to learn, and rewards button-clicking over thinking.
+Nine specialist agents running sequentially as a pipeline: lead analyst, retrieval, processing, spatial stats, cartography, QA, reporting, publishing, peer review. You type a spatial question into your coding agent. The pipeline reads from 134 pages of encoded methodology and runs 155 production scripts. You get styled maps, an interactive web map, a narrative HTML report, a QGIS project, and an ArcGIS Pro package.
 
-| You are... | What changes for you |
-|---|---|
-| **A GIS team of 1–2** | Ship deliverables that look like you have a senior cartographer on staff. Styled `.lyrx` for the Pro user on the team, an HTML report for the client, a Web Map URL for the dashboard. Iterate on a draft in 30 minutes instead of three days. |
-| **A local government employee** (planner, public health, public works) | Run the equity / hazard / access analyses your council keeps asking for, without waiting six weeks on the regional GIS contractor. Standard methodology, defensible outputs, audit trail you can hand to anyone who asks "why did you choose those breaks?" |
-| **A journalist or researcher** | Get to the map and the statistic without becoming a GIS expert first. Every figure has a sidecar tracing it back to the data and the choices made. If your editor asks where a number came from, you have the receipt. |
-| **A student or early-career analyst** | Read the wiki to learn how a senior cartographer thinks about palette choice, classification, and uncertainty. Read the scripts to see how the tools actually work. Modify a palette, ask the agent to redo it, watch what happens. The system *is* the textbook. |
-| **An educator** | Set up the repo once, give your class a prompt, every student gets a complete project to dissect. The PATCH.md model means students can fork and customize without breaking anything. |
-| **A GIS contractor / freelancer** | Cut your time-to-first-draft from days to hours. Spend the hours you saved on the part that earns the invoice — the conversation with your client. |
+Each stage writes a structured handoff the next stage reads. Retrieval finishes before processing starts. Processing finishes before the statistician sees it. The agents work sequentially.
 
-**This is NOT for you if** you only ever need one map, you already have ArcGIS Pro open with a project that works, and you're billing by the hour. Just open Pro.
-
-It's also not the right tool yet for **pure raster work at scale** — elevation, NDVI, lidar workflows are supported, but vector and choropleth are where the system shines. v2 will fix that.
-
-And if you want a button-you-click product, **wait**. There's a QGIS plugin coming in v1.1 that wraps the prompt UX. Today, this is a coding-agent-driven system. You'll see Python tracebacks occasionally. If that's a dealbreaker, give it a season.
+You pick the story. The agents do the drudgery.
 
 ---
 
-## Get it running in 10 minutes
+## Install
 
-You need three things: **Python 3.11+**, a **terminal**, and an **AI coding agent**. Four steps.
+You need Python 3.11+, a terminal, and an AI coding agent.
 
-### 1 — Install Python 3.11 or newer
+### 1. Install Python 3.11 or newer
 
 | Platform | Easiest path |
 |---|---|
-| **Windows** | Microsoft Store → search "Python 3.12" → Install. Or [python.org](https://www.python.org/downloads/) (check "Add python.exe to PATH"). |
-| **macOS** | `brew install python@3.12` (install Homebrew first from [brew.sh](https://brew.sh/)). Or [python.org](https://www.python.org/downloads/). |
-| **Linux / WSL** | `sudo apt install python3.12 python3.12-venv` or your distro's equivalent. |
+| Windows | Microsoft Store → search "Python 3.12" → Install. Or [python.org](https://www.python.org/downloads/) (check "Add python.exe to PATH"). |
+| macOS | `brew install python@3.12`. Or [python.org](https://www.python.org/downloads/). |
+| Linux / WSL | `sudo apt install python3.12 python3.12-venv`. |
 
-Verify: `python --version` (Windows) or `python3 --version` (macOS/Linux). You want `3.11.x` or higher.
+Verify: `python --version` (Windows) or `python3 --version` (macOS/Linux). 3.11.x or higher.
 
-### 2 — Clone, create a venv, install deps
+### 2. Clone, create a venv, install deps
 
 ```bash
-git clone https://github.com/spatial-machines/spatial-machines.git
+git clone https://github.com/spatial-machines/v0.git spatial-machines
 cd spatial-machines
 ```
 
@@ -72,99 +55,71 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
-You'll see `(venv)` at the start of your prompt — that's how you know it's active. Re-run the activate line in any new terminal.
+You'll see `(venv)` at the start of your prompt. Re-run the activate line in any new terminal.
 
 ```bash
 pip install -r requirements.txt
 ```
 
-First time takes a couple minutes (geopandas, matplotlib, fiona, etc.). Cached after.
+First install takes a couple minutes (geopandas, matplotlib, fiona). Cached after.
 
-> **PowerShell yelling about execution policy?** Run this once: `Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned`
+> PowerShell blocking the activate script? Run this once: `Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned`
 
-### 3 — Create your env file
+### 3. Copy the env template
 
 ```bash
 cp .env.example .env        # macOS / Linux / WSL
 copy .env.example .env      # Windows
 ```
 
-**Every analysis using only Census data works with zero keys.** The `.env` is for optional sources (NOAA, CDC, FBI, USDA, etc.). Signup links are inside the file. All free.
+Census-only analyses work with zero keys. The `.env` is for optional sources (NOAA, CDC, FBI, USDA, etc.). Signup links are inside the file. All free.
 
-### 4 — Install your AI coding agent
+### 4. Install a coding agent
 
-| Agent | Install | Entry file |
-|---|---|---|
-| **Claude Code** (Anthropic) | `npm i -g @anthropic-ai/claude-code` or [claude.ai/claude-code](https://claude.ai/claude-code) | `CLAUDE.md` |
-| **Codex CLI** (OpenAI) | `npm i -g @openai/codex` | `AGENTS.md` |
-| **OpenCode** | [opencode.ai](https://opencode.ai) | `AGENTS.md` |
-| **Cursor / Windsurf / Aider** | Open the repo in your tool | `AGENTS.md` |
+| Agent | Install |
+|---|---|
+| Claude Code (Anthropic) | `npm i -g @anthropic-ai/claude-code` or [claude.ai/claude-code](https://claude.ai/claude-code) |
+| Codex CLI (OpenAI) | `npm i -g @openai/codex` |
+| OpenCode | [opencode.ai](https://opencode.ai) |
+| Cursor / Windsurf / Aider | Open the repo in your tool |
 
-Each agent reads its matching entry file and adopts the Lead Analyst role on its own. From inside the repo with your venv active, type the agent's launch command (e.g. `claude`) and start talking.
+Each agent reads its matching entry file (`CLAUDE.md` or `AGENTS.md`) on its own. From inside the repo with your venv active, launch the agent and start talking.
 
-### Skip the agent entirely (just to verify install)
+### Verify install without an agent
 
 ```bash
 make demo            # or: python demo.py
 ```
 
-Runs a 10-second poverty analysis on bundled Census data for Sedgwick County, KS. Opens an HTML report. **No keys, no internet, no agent.** This is purely to confirm Python and the dependencies are happy. The interesting part is the agent flow below.
+Runs a 10-second poverty analysis on bundled Census data for Sedgwick County, KS. Opens an HTML report. No keys, no internet, no agent. Confirms Python and dependencies are happy.
 
 ---
 
-## Your first real prompt
+## Your first prompt
 
-Inside the repo, with your venv active, in your agent of choice:
-
-### Starter prompts (Census-only, no extra keys)
+Inside the repo, with your venv active, launch your coding agent and type:
 
 ```
 What does poverty look like in Cook County, Illinois?
 ```
+
+Or:
 
 ```
 Map median household income for every census tract in Harris County, TX,
 and tell me which neighborhoods are statistical hot spots.
 ```
 
-```
-Rank the top 20 counties in Georgia by uninsured rate. Map and chart them.
-```
-
-```
-Show me where children under 5 live relative to lead-paint risk in Baltimore.
-```
-
-### Multi-source prompts (need a free NOAA / CDC key)
-
-```
-Where in Florida do high flood-risk areas overlap with elderly populations
-and low household income? Show me the high-priority intersection.
-```
-
-```
-For Philadelphia, map diabetes prevalence against walkability (POI density)
-at the tract level. Is there a spatial correlation worth investigating?
-```
-
-### Deep analysis prompts (full pipeline)
+Or:
 
 ```
 I'm writing a grant for a rural health clinic in eastern Kentucky.
 Build me a needs assessment: uninsured rate, poverty rate, distance
-to nearest hospital, chronic disease burden at the tract level. Include
-uncertainty maps for ACS estimates with high MOEs, and write the narrative
-in pyramid principle (answer first, evidence second).
+to nearest hospital, chronic disease burden at the tract level.
+Include uncertainty maps for ACS estimates with high MOEs.
 ```
 
-```
-For Miami-Dade, model heat vulnerability as a composite of: elderly
-population density, lack of A/C access (proxy: pre-1970 housing stock),
-poverty, and surface temperature from the latest NOAA layer. Identify
-the top 10 priority block groups and explain what makes each vulnerable.
-```
-
-The agent will scope, plan, fetch, process, analyze, render, validate, peer-review, and synthesize — usually 5 to 20 minutes depending on data volume. You'll see every decision narrated as it happens.
+The agent scopes, plans, fetches, processes, analyzes, renders, validates, peer-reviews, and synthesizes. Usually 5 to 20 minutes depending on data volume. You see every decision narrated as it happens.
 
 ---
 
@@ -192,117 +147,65 @@ Three layers:
    └──────────────────────────────────────────────┘
 ```
 
-The **wiki** is knowledge. 134 pages of standards (cartography, spatial-stats, CRS, QA), domain playbooks (food access, healthcare, hazards, equity), and authoritative data-source guides (Census, EPA, FEMA, NOAA…). It's how the system knows that a poverty-rate field deserves a YlOrRd palette. That LISA results need FDR correction. That a food-access analysis should overlay supermarkets and skip water features. The wiki is the methodology I wish someone had written down when I started.
+The **wiki** is knowledge. 134 pages of standards (cartography, spatial stats, CRS, QA), domain playbooks (food access, healthcare, hazards, equity), and authoritative data-source guides. It's how the system knows a poverty-rate field gets a YlOrRd palette, that LISA results need FDR correction, that a food-access analysis should overlay supermarkets and skip water features.
 
-The **agents** are 9 role-specialists. Each has a `SOUL.md` (mission + boundaries) and a `TOOLS.md` (approved scripts). The Lead Analyst orchestrates; the others execute their stage; every handoff is a JSON artifact you can inspect.
+The **agents** are 9 role-specialists. Each has a `SOUL.md` (mission, non-negotiables) and a `TOOLS.md` (approved scripts). The Lead Analyst orchestrates. The others execute their stage. Every handoff is a JSON artifact you can inspect.
 
-The **scripts** are 155 production tools. Battle-tested means we ran them on real analyses, broke them, fixed them, standardized their outputs. Every visual writes a `.style.json` sidecar so the QGIS, ArcGIS Pro, and ArcGIS Online deliverables all render from one source of truth. That fidelity is the whole point.
-
-The agent reads the relevant wiki page, picks the right scripts, runs them in the right order, validates the result, and reports back. Composable knowledge over a curated tool inventory.
+The **scripts** are 155 production tools with standardized interfaces. Every visual writes a `.style.json` sidecar so QGIS, ArcGIS Pro, and ArcGIS Online deliverables all render from one source of truth.
 
 ---
 
-## Why it's agentic, patchable, and yours
+## Make it yours
 
-This project is designed to be forked. Every script, prompt, agent definition, and config file is plain text written for an AI agent to read and modify. You're not "users" of a black-box product. You're operating the system.
+Fork it. The repo is designed to be extended by the same agents that run it.
 
-### The PATCH.md model
+Need a fetch script for an API your team uses? Ask your agent. It writes the code, registers it in `config/data_sources.json`, documents it, and wires it into the retrieval role. You review the diff.
 
-Customization happens through `PATCH.md` at the repo root. Every time your AI agent changes the system — adds a data source, changes a default palette, alters pipeline behavior — it writes a `PATCH.md` entry recording **intent**, files modified, why, and notes for re-applying.
+Customizations land in `PATCH.md`: intent, files touched, why. When upstream ships an update, pull, and your agent re-applies your patches by reading the recorded intent. Your work survives updates.
 
-When upstream ships an update:
-
-1. Pull the update.
-2. Tell your agent: *"Re-apply my patches from PATCH.md to the new version."*
-3. The agent reads the *intent* of each change (not just the literal diff) and re-applies it intelligently against the new code.
-
-This means your fork stays yours, *and* you can pull upstream improvements without losing your work. Your customizations are written down in plain English you (and any future agent) can understand.
-
-### Make it your firm's
-
-| You want to... | What to change |
+| Want to... | Change |
 |---|---|
-| Add a data source (custom API, paywalled feed, internal table) | Write a `fetch_<source>.py` following the [pattern](docs/extending/ADDING_DATA_SOURCES.md). Add an entry to `config/data_sources.json`. |
-| Encode your firm's methodology for a domain | Add a page to `docs/wiki/domains/`. The agent will read it before any analysis in that domain. |
-| Change default map styles | Edit `config/map_styles.json`. Five families, 31 palettes. |
-| Connect your PostGIS / SDE / ArcGIS Online / GeoServer | See `docs/extending/CONNECTING_INFRASTRUCTURE.md`. |
-| Build a publishing adapter (S3, GeoServer, internal portal) | Implement `publishing.base.PublishAdapter`. See [`scripts/core/publishing/arcgis_online.py`](scripts/core/publishing/arcgis_online.py) as the reference implementation. |
-| Add a new agent role | Drop a directory in `agents/<role>/` with `SOUL.md` + `TOOLS.md`. The lead-analyst can delegate to it. |
-| Change cartography rules | Edit `docs/wiki/standards/CARTOGRAPHY_STANDARD.md`. The cartography agent reads it before every map. |
-
-The wiki is your firm's knowledge base, encoded once, applied automatically. The scripts are your tool library, with clear contracts. The agents are your team's decision-making, made explicit. Your fork becomes your firm.
+| Add a data source | Write `fetch_<source>.py` (see [pattern](docs/extending/ADDING_DATA_SOURCES.md)), register in `config/data_sources.json` |
+| Encode your firm's domain methodology | Add a page to `docs/wiki/domains/` |
+| Change default map styles | Edit `config/map_styles.json` |
+| Connect PostGIS / SDE / AGOL / GeoServer | See `docs/extending/CONNECTING_INFRASTRUCTURE.md` |
+| Build a publishing adapter | Implement `publishing.base.PublishAdapter`. See [`scripts/core/publishing/arcgis_online.py`](scripts/core/publishing/arcgis_online.py) as reference |
+| Add a new agent role | Drop a directory in `agents/<role>/` with `SOUL.md` and `TOOLS.md` |
+| Change cartography rules | Edit `docs/wiki/standards/CARTOGRAPHY_STANDARD.md` |
 
 ---
 
-## Learning geospatial analysis with it
-
-This is the part I'm most quietly proud of. Two ways to use it:
-
-**As a textbook.** Read the wiki. 134 pages of how a senior cartographer actually thinks about palette choice, classification methods, projection selection, MOE handling, hotspot interpretation, accessibility checks. The kind of accumulated tradecraft normally locked inside senior practitioners' heads. (Mine, plus the standards from the literature, plus the dumb mistakes I made early.)
-
-**As a lab.** Pick a real question — your hometown's poverty rate, your campus walkshed, a hazard you've worried about — run the agent on it, and read everything it produces: the project brief, the activity log, the code that ran, the validation report, the peer review. Modify a palette, ask the agent to redo the map, watch the change propagate. Modify a wiki page, watch the next analysis honor your rule.
-
-For an instructor running an undergraduate or graduate spatial-analysis class:
-
-- **Setup once.** Clone, install, hand out access.
-- **One prompt = one project deliverable.** Students get a complete, fork-able package — data, processing scripts, maps, charts, report, audit trail.
-- **Customization is the assignment.** "Add a new data source" or "add a new domain page for X" or "modify the cartography standard for Y" are real, learnable, finishable assignments that map to professional skills.
-- **PATCH.md becomes a portfolio.** The student's fork *is* their submission. Their PATCH.md entries serve as documented design decisions.
-
-If you teach with this and want to share materials, **open an issue.** I'd love to host community-contributed teaching modules.
-
----
-
-## What you can analyze
-
-| Domain | Example questions |
-|---|---|
-| **Equity & demographics** | Poverty hot spots, racial dot maps, income disparity at scale, ACS uncertainty visualization |
-| **Healthcare access** | Distance to nearest hospital / FQHC / pharmacy, uninsured-rate maps, chronic-disease burden, healthcare desert detection |
-| **Food access** | LILA tracts, supermarket density, food-desert composition, USDA Food Access Atlas integration |
-| **Hazards & climate** | FEMA flood-zone overlays, heat-vulnerability composites, NOAA temperature trends, fire-risk surface combinations |
-| **Environmental justice** | EPA EJScreen indicators, pollution-exposure overlays, vulnerability indexes |
-| **Transit & mobility** | GTFS service area, walkshed analysis, transit equity, POI accessibility |
-| **Housing** | HUD Fair Market Rents vs. local incomes, housing-cost burden, displacement risk |
-| **Public safety** | Crime density vs. demographics, disparity analyses, FBI UCR integration |
-| **Education access** | School-district demographic profiles, distance-to-school, opportunity maps |
-| **Economic development** | LEHD/LODES commute flows, job density, employment hubs, retail gap analysis |
-
-Bring your own data via `retrieve_local.py` or `retrieve_remote.py` — anything you can put in a GeoPackage, Shapefile, GeoJSON, or CSV with lat/long is fair game.
-
----
-
-## What gets produced
+## What it produces
 
 Every run writes to `analyses/<project>/outputs/`:
 
-- **Maps** — choropleth, bivariate (3×3 Stevens), hotspot, LISA, point overlay, dot density, proportional symbol, small multiples, uncertainty. 200 DPI, colorblind-checked, with `.style.json` sidecars.
-- **Charts** — distribution (histogram / KDE / box / violin), comparison (bar / lollipop / dot), relationship (scatter / scatter+OLS / hexbin / correlation heatmap), time series (line / area / small multiples). PNG + SVG.
-- **Interactive web maps** — Folium, toggleable layers, popups, multiple basemaps.
-- **QGIS package** — `.qgs` project, graduated/categorized renderers, basemap, auto-zoom, print layout template.
-- **ArcGIS Pro package** — file geodatabase (`.gdb`), styled `.lyrx` layer files, `make_aprx.py` helper, charts folder. **No Esri license required to produce.** If `arcpy` is available, a full `.aprx` is pre-built.
-- **ArcGIS Online (opt-in)** — uploads the GDB, publishes a hosted Feature Service with N layers, applies sidecar renderers, builds a Web Map. Default sharing is PRIVATE. Requires an ArcGIS Online subscription (Location Platform / Developer tier doesn't include hosted publishing — see the [workflow doc](docs/wiki/workflows/ARCGIS_ONLINE_PUBLISHING.md)).
-- **Narrative report** — self-contained HTML with exec summary, KPIs, embedded maps + charts, methodology, caveats, sources.
-- **Solution graph** — DAG showing every input → operation → output. PNG, SVG, JSON, Mermaid.
-- **QA scorecards**, **data dictionaries**, **provenance records**, **handoff JSON** — full auditability.
+- **Maps**: choropleth, bivariate (3×3 Stevens), hotspot, LISA, point overlay, dot density, proportional symbol, small multiples, uncertainty. 200 DPI, colorblind-checked, with `.style.json` sidecars.
+- **Charts**: distribution, comparison, relationship, time series. PNG and SVG.
+- **Interactive web maps**: Folium with toggleable layers, popups, multiple basemaps.
+- **QGIS package**: `.qgs` project with graduated/categorized renderers, basemap, auto-zoom, print layout template.
+- **ArcGIS Pro package**: file geodatabase, styled `.lyrx` files, `make_aprx.py` helper. No Esri license required to produce. If `arcpy` is available locally, a full `.aprx` is pre-built.
+- **ArcGIS Online (opt-in)**: uploads the GDB, publishes a hosted Feature Service, applies sidecar renderers, builds a Web Map. Default sharing is PRIVATE. See the [workflow doc](docs/wiki/workflows/ARCGIS_ONLINE_PUBLISHING.md) for subscription-tier notes.
+- **Narrative report**: self-contained HTML with exec summary, KPIs, embedded visuals, methodology, caveats, sources.
+- **Solution graph**: DAG of every input, operation, and output. PNG, SVG, JSON, Mermaid.
+- **QA scorecards, data dictionaries, provenance records, handoff JSON**.
 
 ---
 
-## The 9 specialists
+## The nine agents
 
 | Agent | Role |
 |---|---|
-| **Lead Analyst** | Orchestrates the pipeline, scopes work, integrates and synthesizes |
-| **Data Retrieval** | Acquires data from 20+ built-in sources (Census, EPA, CDC, FEMA, NOAA, OSM, …) |
-| **Data Processing** | Cleans, normalizes, joins → analysis-ready GeoPackages with provenance |
-| **Spatial Stats** | Hotspot (Gi*), LISA, Moran's I, change detection — with FDR correction by default |
-| **Cartography** | Maps **and** statistical charts — distribution, comparison, relationship, time series |
-| **Validation QA** | Geometry, join rates, null values, structural integrity gates |
-| **Report Writer** | Pyramid Principle (answer first), HTML + Markdown |
-| **Site Publisher** | QGIS package, ArcGIS Pro package, optional AGOL publishing |
-| **Peer Reviewer** | Independent gate — catches unsupported claims, overconfidence, missing caveats |
+| Lead Analyst | Orchestrates the pipeline, scopes work, integrates and synthesizes |
+| Data Retrieval | Acquires data from 20+ built-in sources |
+| Data Processing | Cleans, normalizes, joins into analysis-ready GeoPackages with provenance |
+| Spatial Stats | Hotspot (Gi*), LISA, Moran's I, change detection. FDR correction by default |
+| Cartography | Maps and statistical charts |
+| Validation QA | Geometry, join rates, null values, structural integrity gates |
+| Report Writer | Pyramid Principle reports (answer first). HTML + Markdown |
+| Site Publisher | QGIS package, ArcGIS Pro package, optional AGOL publishing |
+| Peer Reviewer | Independent gate for unsupported claims, overconfidence, missing caveats |
 
-Each agent has `agents/<role>/SOUL.md` (mission + boundaries) and `agents/<role>/TOOLS.md` (approved scripts). Read either to understand exactly what each will and won't do.
+Each agent has `agents/<role>/SOUL.md` (mission, non-negotiables) and `agents/<role>/TOOLS.md` (approved scripts).
 
 ---
 
@@ -310,16 +213,16 @@ Each agent has `agents/<role>/SOUL.md` (mission + boundaries) and `agents/<role>
 
 | Category | Sources | Auth |
 |---|---|---|
-| **Demographics** | Census ACS, Decennial Population, TIGER, LEHD/LODES | Free key optional |
-| **Health** | CDC PLACES, EPA EJScreen | None |
-| **Food & housing** | USDA Food Access Atlas, HUD Fair Market Rents | Free key optional |
-| **Hazards & climate** | FEMA Flood Zones, NOAA Climate, OpenWeatherMap | Free keys |
-| **Economic & safety** | BLS employment, FBI crime | Free keys |
-| **Places & POI** | OpenStreetMap (Overpass), Overture Maps | None |
-| **Terrain** | USGS National Map (DEM) | None |
-| **Transit** | GTFS feeds | None |
-| **Open data** | Socrata (1000s of city/county/state portals) | Optional token |
-| **Generic** | Any URL, any local file (GPKG, SHP, CSV, GeoJSON) | None |
+| Demographics | Census ACS, Decennial Population, TIGER, LEHD/LODES | Free key optional |
+| Health | CDC PLACES, EPA EJScreen | None |
+| Food & housing | USDA Food Access Atlas, HUD Fair Market Rents | Free key optional |
+| Hazards & climate | FEMA Flood Zones, NOAA Climate, OpenWeatherMap | Free keys |
+| Economic & safety | BLS employment, FBI crime | Free keys |
+| Places & POI | OpenStreetMap (Overpass), Overture Maps | None |
+| Terrain | USGS National Map (DEM) | None |
+| Transit | GTFS feeds | None |
+| Open data | Socrata (thousands of city/county/state portals) | Optional token |
+| Generic | Any URL, any local file (GPKG, SHP, CSV, GeoJSON) | None |
 
 Full registry: [`config/data_sources.json`](config/data_sources.json). Add your own: [`docs/extending/ADDING_DATA_SOURCES.md`](docs/extending/ADDING_DATA_SOURCES.md).
 
@@ -331,7 +234,7 @@ Full registry: [`config/data_sources.json`](config/data_sources.json). Add your 
 spatial-machines/
 ├── CLAUDE.md            ← Claude Code entry point
 ├── AGENTS.md            ← Agent-agnostic orchestration guide
-├── PATCH.md             ← Your customization log (yours; starts empty)
+├── PATCH.md             ← Your customization log (starts empty)
 ├── demo.py              ← Standalone demo
 ├── Makefile             ← `make demo`, `make verify`
 ├── .env.example         ← API key template (all free sources)
@@ -341,9 +244,9 @@ spatial-machines/
 │   ├── wiki/            ← 134 pages of canonical GIS methodology
 │   │   ├── standards/   ← cartography, charts, spatial-stats, CRS, QA
 │   │   ├── workflows/   ← step-by-step playbooks
-│   │   ├── domains/     ← healthcare, food access, equity, hazards, …
+│   │   ├── domains/     ← healthcare, food access, equity, hazards
 │   │   ├── data-sources/← authoritative source guides
-│   │   └── toolkits/    ← GDAL, GeoPandas, PostGIS, Rasterio, …
+│   │   └── toolkits/    ← GDAL, GeoPandas, PostGIS, Rasterio
 │   ├── architecture/    ← pipeline canon, tool governance
 │   ├── reference/       ← TEAM.md, PIPELINE_STANDARDS.md
 │   ├── guides/          ← INSTALL, ANALYST_GUIDE, TROUBLESHOOTING
@@ -358,64 +261,32 @@ spatial-machines/
 
 ---
 
-## Joining in
-
-This project is openly developed. Things I'd most love help with:
-
-- **New data sources.** Write a `fetch_*.py` following the pattern, add to the registry. Domain-specific sources (state-level health, regional planning datasets, niche industry feeds) especially welcome.
-- **Domain wiki pages.** Encode your specialty — utility-line vegetation management, retail site selection, brownfield prioritization, anything. One good page = many future analyses get smarter.
-- **Real prompts that produced bad output.** File an issue. The system improves the most when we surface friction. The goal isn't a benchmark; it's "did this produce a thing a real client would accept?"
-- **Teaching modules.** If you use this in a class or workshop, share the materials. I want this in classrooms.
-- **New publishing adapters.** GeoServer, S3 / static-site, internal portals, internal SDE. Implement `PublishAdapter`, ship it, write the workflow doc.
-
-Start at [CONTRIBUTING.md](CONTRIBUTING.md). For non-trivial changes please open an issue first to discuss.
-
----
-
-## What we enforce
-
-- **Script-first** — use existing core scripts before writing custom code
-- **Style registry** — `config/map_styles.json` and `config/chart_styles.json` are read before every visual
-- **FDR correction** — Benjamini-Hochberg on all hotspot/LISA results
-- **Moran's I gate** — global autocorrelation tested before any local spatial analysis
-- **Colorblind accessibility** — every map and multi-series chart is checked
-- **Pyramid Principle** — reports lead with the answer, not the methodology
-- **Vision QA** — the agent inspects every map before delivery
-- **Peer review** — independent gate catches unsupported claims
-
-These are wiki-encoded; agents enforce them automatically and cite the standard when asked why.
-
----
-
 ## Documentation
 
-- **[Wiki](docs/wiki/)** — 134 pages the agents consult before every analysis
-- **[Architecture](docs/architecture/ARCHITECTURE.md)** — how the 9-agent system is organized
-- **[Pipeline Standards](docs/reference/PIPELINE_STANDARDS.md)** — mandatory output quality standards
-- **[Cartography Standard](docs/wiki/standards/CARTOGRAPHY_STANDARD.md)** — full map family taxonomy + design rules
-- **[Chart Design Standard](docs/wiki/standards/CHART_DESIGN_STANDARD.md)** — mandatory rules for statistical charts
-- **[ArcGIS Pro Package Standard](docs/wiki/standards/ARCGIS_PRO_PACKAGE_STANDARD.md)** — what the `.gdb` + `.lyrx` bundle guarantees
-- **[ArcGIS Online Publishing](docs/wiki/workflows/ARCGIS_ONLINE_PUBLISHING.md)** — opt-in AGOL workflow + subscription / scope notes
-- **[Install Guide](docs/guides/INSTALL.md)** — deeper setup (GDAL on Windows, PostGIS, etc.)
-- **[Troubleshooting](docs/guides/TROUBLESHOOTING.md)** — common issues and fixes
-- **[Extending](docs/extending/)** — add data sources, connect infrastructure, customize palettes, build adapters
+- **[Wiki](docs/wiki/):** 134 pages the agents consult before every analysis
+- **[Architecture](docs/architecture/ARCHITECTURE.md):** how the 9-agent system is organized
+- **[Pipeline Standards](docs/reference/PIPELINE_STANDARDS.md):** mandatory output quality standards
+- **[Cartography Standard](docs/wiki/standards/CARTOGRAPHY_STANDARD.md):** full map family taxonomy and design rules
+- **[Chart Design Standard](docs/wiki/standards/CHART_DESIGN_STANDARD.md):** mandatory rules for statistical charts
+- **[ArcGIS Pro Package Standard](docs/wiki/standards/ARCGIS_PRO_PACKAGE_STANDARD.md):** what the `.gdb` + `.lyrx` bundle guarantees
+- **[ArcGIS Online Publishing](docs/wiki/workflows/ARCGIS_ONLINE_PUBLISHING.md):** opt-in AGOL workflow + subscription notes
+- **[Install Guide](docs/guides/INSTALL.md):** deeper setup (GDAL on Windows, PostGIS, etc.)
+- **[Troubleshooting](docs/guides/TROUBLESHOOTING.md)**
+- **[Extending](docs/extending/):** data sources, infrastructure, adapters
+- **[Contributing](CONTRIBUTING.md)**
 
 ---
 
 ## License + acknowledgments
 
-**License:** Apache-2.0. See [LICENSE](LICENSE).
+Apache-2.0. See [LICENSE](LICENSE).
 
-**Trademark:** "spatial-machines" is a project name. Forks must use a different name. See [TRADEMARK.md](TRADEMARK.md). The PATCH.md model means you can run a customized fork-of-yours-only without renaming; published forks ship under your own name.
+"spatial-machines" is a trademark. Forks must use a different name. See [TRADEMARK.md](TRADEMARK.md). The PATCH.md model means you can run a customized fork of your own without renaming; published forks ship under your own name.
 
-**Acknowledgments:** the GIS tool registry (`scripts/tool-registry/`) is built on research from the [SpatialAnalysisAgent](https://github.com/Teakinboyewa/SpatialAnalysisAgent) project by Akinboyewa et al. at Penn State. The solution-graph concept comes from the autonomous-GIS prototype by Ning et al. (*International Journal of Digital Earth*, 2023):
+The GIS tool registry (`scripts/tool-registry/`) is built on research from the [SpatialAnalysisAgent](https://github.com/Teakinboyewa/SpatialAnalysisAgent) project by Akinboyewa et al. at Penn State. The solution-graph concept comes from the autonomous-GIS prototype by Ning et al. (*International Journal of Digital Earth*, 2023):
 
 > Ning, H., Li, Z., Akinboyewa, T., & Lessani, M. N. (2023). *An autonomous GIS agent framework for geospatial data retrieval.* doi:10.1080/17538947.2023.2278895
 >
 > Akinboyewa, T., Xu, Z., Huan, X., & Li, Z. (2024). *GIS Copilot: Towards an Autonomous GIS Agent for Spatial Analysis.* doi:10.1080/17538947.2025.2497489
 
 Under GPL-3.0 where applicable.
-
----
-
-If you build something with this you're proud of — a community map, a report that moved a council vote, a class project that taught a student to think spatially — open an issue and tell me. I'm collecting these. The point of getting the drudgery out of GIS was always so we could go back to doing the work that mattered.

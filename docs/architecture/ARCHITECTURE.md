@@ -112,7 +112,6 @@ All analysis scripts are organized under `scripts/`:
 | Folder | Contents |
 |---|---|
 | `scripts/core/` | Battle-tested scripts used in real analyses |
-| `scripts/future/` | Aspirational scripts — written but not yet battle-tested |
 | `scripts/demos/` | Shell scripts for pipeline demonstrations |
 | `scripts/deprecated/` | Old scripts kept for reference (do not use) |
 
@@ -251,14 +250,13 @@ Each pipeline stage writes a structured JSON handoff to `runs/` before passing c
 
 | Limitation | Status | Notes |
 |---|---|---|
-| PostGIS backend | ❌ Not live | `db-manager` agent dormant; PostGIS only used for optional local OSM mirror |
-| Vector tile publishing | ❌ Not functional | Requires Martin tile server; `publish_tiles.py` in `scripts/future/` |
-| Service area analysis | ⚠️ Aspirational | `osmnx` isochrones work on fast hardware; not in core-tested paths |
-| Time-series animation | ⚠️ Aspirational | `animate_time_series.py` in `scripts/core/` — written but not battle-tested |
-| 3D terrain | ⚠️ Aspirational | `render_3d_terrain.py` in `scripts/future/` |
-| Memory automation | ⚠️ Manual | Lessons log and retrospectives are manually maintained |
-| Raster pipeline | ⚠️ Aspirational | Raster scripts in `scripts/future/` — not on core-tested paths |
-| Global data portals | ⚠️ Manual | `data-retrieval` knows the portals but automated fetching is aspirational |
+| PostGIS backend | Not live | `db-manager` agent dormant; PostGIS only used for optional local OSM mirror |
+| Vector tile publishing | Not functional | Requires Martin tile server; no core script |
+| Service area analysis | Not on core-tested paths | `osmnx` isochrones work on fast hardware but not in the battle-tested flow |
+| Time-series animation | Not battle-tested | `animate_time_series.py` in `scripts/core/` but not exercised on real runs |
+| Raster pipeline | Not battle-tested | Vector and choropleth are the battle-tested paths |
+| Memory automation | Manual | Lessons log and retrospectives are manually maintained |
+| Global data portals | Manual | `data-retrieval` knows the portals but automated fetching is manual |
 
 **What DOES work reliably (battle-tested):**
 - Census ACS + TIGER retrieval → processing → choropleth → validation → report (full pipeline)

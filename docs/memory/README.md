@@ -10,7 +10,7 @@ Agents improve when they can reference past decisions, past failures, and lesson
 |---|---|---|
 | `PROJECT_MEMORY.md` | Human-maintained institutional summary — "read first on every engagement" | You (manually) |
 | `lessons-learned.jsonl` | Append-only structured lessons from prior runs | `scripts/core/log_lesson.py` |
-| `retrospectives/*.retro.md` | Per-run or per-milestone-chain retrospectives | `scripts/future/write_retrospective.py` (or by hand) |
+| `retrospectives/*.retro.md` | Per-run or per-milestone-chain retrospectives | by hand |
 
 The memory layer is referenced in [ARCHITECTURE.md](../architecture/ARCHITECTURE.md) as Layer 2. It is not required — agents work fine without any memory content — but it's the mechanism by which your fork gets smarter over time.
 
@@ -93,8 +93,6 @@ Name by the run ID or analysis ID (e.g., `atl-equity-q2.retro.md`).
 
 - **`scripts/core/log_lesson.py`** — append a lesson to `lessons-learned.jsonl`
 - **`scripts/core/check_memory_status.py`** — report staleness of memory files
-- **`scripts/future/update_project_memory.py`** — auto-regenerate `PROJECT_MEMORY.md` from recent activity (experimental)
-- **`scripts/future/write_retrospective.py`** — stub retrospective for a given run (experimental)
 
 ## When to refresh
 

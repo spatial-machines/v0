@@ -35,9 +35,8 @@ analyses/<project-id>/       # Project workspace (fully isolated)
 └── runs/                   # Pipeline handoff JSONs (handoff chain)
 
 scripts/core/               # 155 battle-tested production scripts
-scripts/future/             # 15 experimental scripts (not battle-tested)
 config/map_styles.json      # 31 palettes, 5 map families — read before every map
-docs/wiki/                  # 136 pages of canonical GIS methodology
+docs/wiki/                  # 134 pages of canonical GIS methodology
 ```
 
 ## Pipeline Stages (artifact-driven)

@@ -40,11 +40,10 @@ To orient — core scripts fall into these families. Browse [`core/`](core/) for
 
 See [docs/extending/ADDING_DATA_SOURCES.md](../docs/extending/ADDING_DATA_SOURCES.md) for the specific case of a new data fetcher. In general:
 
-1. Write in `scripts/future/` first.
-2. Use the standard argparse pattern (see any `fetch_*.py` for a reference).
-3. Write to paths under `analyses/<project>/...` — never to global state.
-4. Write a `.style.json` / `.provenance.json` / `.manifest.json` sidecar where applicable.
-5. Once battle-tested on ≥1 real analysis, move to `scripts/core/` and document in [PATCH.md](../PATCH.md) for fork tracking.
+1. Use the standard argparse pattern (see any `fetch_*.py` for a reference).
+2. Write to paths under `analyses/<project>/...` — never to global state.
+3. Write a `.style.json` / `.provenance.json` / `.manifest.json` sidecar where applicable.
+4. Place in `scripts/core/` and document in [PATCH.md](../PATCH.md) for fork tracking.
 
 ## Principles
 

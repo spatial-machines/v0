@@ -158,7 +158,7 @@ class TestExtractArchive:
     def test_extract_shapefile_zip(self, tmp_path):
         script = SCRIPTS_DIR / "extract_archive.py"
         if not script.exists():
-            pytest.skip("extract_archive.py is in scripts/future/, not yet promoted to core")
+            pytest.skip("extract_archive.py not present in scripts/core/")
         zip_path = _create_small_shapefile_zip(tmp_path / "test.zip")
         out_dir = tmp_path / "interim"
         out_dir.mkdir()

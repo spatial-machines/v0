@@ -30,7 +30,7 @@ Deliver analysis outputs to external systems — ArcGIS Online, GeoServer, cloud
 
 When extending spatial-machines, follow these principles:
 
-1. **Script-first.** New capabilities should be scripts in `scripts/core/` (or `scripts/future/` if experimental), not inline code in agent prompts.
+1. **Script-first.** New capabilities should be scripts in `scripts/core/`, not inline code in agent prompts.
 
 2. **Manifest everything.** Every data retrieval should produce a `.manifest.json` sidecar documenting what was fetched, when, from where, and any caveats.
 
