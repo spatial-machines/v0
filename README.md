@@ -20,78 +20,83 @@ You pick the story. The agents do the drudgery.
 
 ## Install
 
-You need Python 3.11+, a terminal, and an AI coding agent.
+You need Python 3.12, a terminal, and an AI coding agent.
 
-### 1. Install Python 3.11 or newer
+**Python version matters.** The geospatial stack (rasterstats pulls fiona, which pulls GDAL) only has prebuilt wheels up through Python 3.12 on most platforms. Python 3.13+ will try to compile fiona from source, fail, and block the install. If you're on 3.13 or newer, install 3.12 alongside it. Don't fight this.
+
+### 1. Install Python 3.12
 
 | Platform | Easiest path |
 |---|---|
-| Windows | Microsoft Store → search "Python 3.12" → Install. Or [python.org](https://www.python.org/downloads/) (check "Add python.exe to PATH"). |
-| macOS | `brew install python@3.12`. Or [python.org](https://www.python.org/downloads/). |
+| Windows | Microsoft Store → search **"Python 3.12"** → Install. Or [python.org](https://www.python.org/downloads/release/python-3129/) (check "Add python.exe to PATH"). |
+| macOS | `brew install python@3.12`. Or [python.org](https://www.python.org/downloads/release/python-3129/). |
 | Linux / WSL | `sudo apt install python3.12 python3.12-venv`. |
 
-Verify: `python --version` (Windows) or `python3 --version` (macOS/Linux). 3.11.x or higher.
+Verify:
+- Windows: `py -3.12 --version`. Must print `3.12.x`. If that works, your default `python` can stay whatever it is; Windows ships a `py` launcher that lets you pick.
+- macOS / Linux: `python3.12 --version`. Must print `3.12.x`.
 
-### 2. Clone, create a venv, install deps
-
-```bash
-git clone https://github.com/spatial-machines/v0.git spatial-machines
-cd spatial-machines
-```
-
-A venv is a private Python sandbox for this project. Don't skip it.
-
-```bash
-# Windows (PowerShell)
-python -m venv venv
-venv\Scripts\Activate.ps1
-
-# Windows (cmd)
-python -m venv venv
-venv\Scripts\activate.bat
-
-# macOS / Linux / WSL
-python3 -m venv venv
-source venv/bin/activate
-```
-
-You'll see `(venv)` at the start of your prompt. Re-run the activate line in any new terminal.
-
-```bash
-pip install -r requirements.txt
-```
-
-First install takes a couple minutes (geopandas, matplotlib, fiona). Cached after.
-
-> PowerShell blocking the activate script? Run this once: `Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned`
-
-### 3. Copy the env template
-
-```bash
-cp .env.example .env        # macOS / Linux / WSL
-copy .env.example .env      # Windows
-```
-
-Census-only analyses work with zero keys. The `.env` is for optional sources (NOAA, CDC, FBI, USDA, etc.). Signup links are inside the file. All free.
-
-### 4. Install a coding agent
+### 2. Install your coding agent (do this first so PATH updates)
 
 | Agent | Install |
 |---|---|
-| Claude Code (Anthropic) | `npm i -g @anthropic-ai/claude-code` or [claude.ai/claude-code](https://claude.ai/claude-code) |
+| Claude Code (Anthropic) | `npm i -g @anthropic-ai/claude-code` |
 | Codex CLI (OpenAI) | `npm i -g @openai/codex` |
 | OpenCode | [opencode.ai](https://opencode.ai) |
 | Cursor / Windsurf / Aider | Open the repo in your tool |
 
-Each agent reads its matching entry file (`CLAUDE.md` or `AGENTS.md`) on its own. From inside the repo with your venv active, launch the agent and start talking.
+**After an npm global install, close the terminal and open a new one.** Windows won't pick up the new `claude` command otherwise.
 
-### Verify install without an agent
+### 3. Clone and install
 
-```bash
-make demo            # or: python demo.py
+```
+git clone https://github.com/spatial-machines/v0.git spatial-machines
+cd spatial-machines
+```
+
+**Windows (Command Prompt, recommended):**
+```
+py -3.12 -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+`py -3.12` is critical: if your default `python` is 3.13 or 3.14, running plain `python -m venv venv` silently builds the venv on the wrong version and the next `pip install` fails on fiona.
+
+**macOS / Linux / WSL:**
+```
+python3.12 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+You'll see `(venv)` at the start of your prompt when the venv is active. The agent needs the venv active when you launch it, so it calls the right Python. Re-run the activate line in any new terminal.
+
+First install takes a couple minutes. Cached after.
+
+### 4. Copy the env template
+
+```
+copy .env.example .env      # Windows (cmd)
+cp .env.example .env        # macOS / Linux / WSL
+```
+
+Census-only analyses work with zero keys. The `.env` is for optional sources (NOAA, CDC, FBI, USDA, etc.). Signup links are inside the file. All free.
+
+### 5. Verify and launch
+
+```
+python demo.py
 ```
 
 Runs a 10-second poverty analysis on bundled Census data for Sedgwick County, KS. Opens an HTML report. No keys, no internet, no agent. Confirms Python and dependencies are happy.
+
+From the same shell (venv still active), launch your coding agent:
+```
+claude
+```
+
+Each agent reads its matching entry file (`CLAUDE.md` or `AGENTS.md`) on its own. Start talking.
 
 ---
 

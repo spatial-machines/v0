@@ -14,8 +14,8 @@ The GIS Analyst Agent Team is a role-based multi-agent system operating in a rep
 A reproducible runtime for GIS work. Everything runs in a local Python venv — no Docker, no cloud requirement.
 
 **Active stack:**
-- Python 3.11+
-- geopandas, pandas, numpy, shapely, pyproj, pyogrio / fiona
+- Python 3.12 (pinned; 3.13+ lacks wheels for the geospatial stack)
+- geopandas, pandas, numpy, shapely, pyproj, pyogrio (fiona pulled transitively by rasterstats)
 - rasterio, rasterstats, richdem
 - matplotlib, seaborn
 - folium (interactive web maps)

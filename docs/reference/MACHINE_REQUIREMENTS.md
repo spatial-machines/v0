@@ -7,7 +7,7 @@ What you need on your machine to run spatial-machines.
 | Component | What you need |
 |---|---|
 | OS | Windows 10/11, macOS 12+, Linux, or WSL2 |
-| Python | 3.11 or newer |
+| Python | 3.12 (pin here; 3.13+ breaks geospatial wheels) |
 | RAM | 4 GB minimum, 8 GB+ recommended |
 | Storage | 5 GB free for repo + deps; more if you keep many analyses |
 | Network | Needed for data-fetching and AI-agent calls; not for rendering |
@@ -17,17 +17,19 @@ No Docker required. No ArcGIS license required. No QGIS required (though install
 
 ## Python
 
-Python 3.11 or newer. Tested against 3.11 and 3.12 on Windows, macOS, and Linux.
+Python 3.12 specifically. Tested against 3.11 and 3.12 on Windows, macOS, and Linux. Python 3.13+ will fail to install the geospatial stack: prebuilt wheels for fiona, rasterio, and pyogrio lag behind new Python releases, and source builds need GDAL headers that aren't on a default Windows or macOS box.
+
+If you already have 3.13+ installed for other projects, install 3.12 alongside it. On Windows, the py launcher (`py -3.12 -m venv venv`) lets you pick which one.
 
 Install paths:
 
 | Platform | Path |
 |---|---|
-| **Windows** | Microsoft Store → search "Python 3.12" → Install. Or [python.org](https://www.python.org/downloads/) (check "Add python.exe to PATH"). |
-| **macOS** | `brew install python@3.12` (install [Homebrew](https://brew.sh/) first) or [python.org](https://www.python.org/downloads/). |
+| **Windows** | Microsoft Store → search "Python 3.12" → Install. Or [python.org](https://www.python.org/downloads/release/python-3129/) (check "Add python.exe to PATH"). |
+| **macOS** | `brew install python@3.12` (install [Homebrew](https://brew.sh/) first) or [python.org](https://www.python.org/downloads/release/python-3129/). |
 | **Linux / WSL** | `sudo apt install python3.12 python3.12-venv` (Ubuntu/Debian) or your distro's equivalent. |
 
-Verify: `python --version` (Windows) or `python3 --version` (macOS/Linux).
+Verify: `python --version` (Windows) or `python3.12 --version` (macOS/Linux). Must print 3.12.x.
 
 ## Recommended resources
 
@@ -48,7 +50,8 @@ All handled by `pip install -r requirements.txt`. Key packages:
 
 | Package | Purpose |
 |---|---|
-| geopandas, pandas, numpy, shapely, pyproj, fiona | Core geospatial stack |
+| geopandas, pandas, numpy, shapely, pyproj, pyogrio | Core geospatial stack |
+| rasterio, rasterstats | Raster analysis (pulls fiona transitively) |
 | matplotlib, seaborn | Static map and chart rendering |
 | mapclassify, contextily | Classification + basemap tiles |
 | folium, branca | Interactive web maps |

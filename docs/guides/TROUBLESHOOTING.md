@@ -4,9 +4,17 @@ Common issues and how to fix them.
 
 ## Installation Issues
 
+### `pip install` fails on fiona, rasterio, or pyogrio (Windows)
+**Cause:** You're on Python 3.13 or newer. Prebuilt wheels for the geospatial stack lag one or two Python versions behind; pip then tries to compile from source and fails because GDAL headers aren't on your machine.
+**Fix:** Install Python 3.12 (Microsoft Store or [python.org](https://www.python.org/downloads/release/python-3129/)). Delete the broken `venv/` folder. Recreate it with the 3.12 interpreter: `py -3.12 -m venv venv`. Activate and re-run `pip install -r requirements.txt`.
+
+### `claude: command not found` after `npm i -g @anthropic-ai/claude-code`
+**Cause:** Windows doesn't pick up the new npm global bin in PATH until you restart the terminal.
+**Fix:** Close the terminal, open a new one, try `claude` again. If still missing, check that `%APPDATA%\npm` is in your user PATH (System Properties → Environment Variables).
+
 ### "Could not find a version that satisfies the requirement"
 **Cause:** A package is unavailable for your Python version or platform.
-**Fix:** Ensure Python 3.11+ is installed. If a specific package fails, check if it's in the optional section of `requirements.txt` and comment it out if you don't need it.
+**Fix:** Ensure Python 3.12 is installed. If a specific package fails, check if it's in the optional section of `requirements.txt` and comment it out if you don't need it.
 
 ### GDAL/PROJ/GEOS import errors
 **Cause:** System spatial libraries not installed.
