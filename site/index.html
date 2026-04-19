@@ -153,19 +153,21 @@
 
 <h2 id="install">Try it</h2>
 
+<p>You need <strong>Python 3.12</strong>. Not 3.13 or newer: the geospatial stack (rasterstats pulls fiona, which pulls GDAL) doesn't ship prebuilt wheels for 3.13+ yet, and source builds need GDAL headers your laptop doesn't have. If 3.12 isn't your default, install it alongside whatever you already have.</p>
+
 <p class="platform-label">macOS / Linux / WSL</p>
 <pre><code>git clone https://github.com/spatial-machines/v0.git
-cd spatial-machines
-python -m venv venv &amp;&amp; source venv/bin/activate
+cd v0
+python3.12 -m venv venv &amp;&amp; source venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env
 python demo.py</code></pre>
 
-<p class="platform-label">Windows (PowerShell)</p>
+<p class="platform-label">Windows (Command Prompt)</p>
 <pre><code>git clone https://github.com/spatial-machines/v0.git
-cd spatial-machines
-python -m venv venv
-venv\Scripts\Activate.ps1
+cd v0
+py -3.12 -m venv venv
+venv\Scripts\activate
 pip install -r requirements.txt
 copy .env.example .env
 python demo.py</code></pre>
