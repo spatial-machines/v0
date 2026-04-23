@@ -1,7 +1,7 @@
 # QGIS Tool Knowledge for GIS Agents: Research Brief
 
 **Date:** 2026-04-04  
-**Prepared for:** Chris / GIS consulting firm multi-agent system  
+**Prepared for:** GIS consulting firm multi-agent system  
 **Question:** Should we ingest the Penn State SpatialAnalysisAgent TOML tool definitions, and how?
 
 ---
